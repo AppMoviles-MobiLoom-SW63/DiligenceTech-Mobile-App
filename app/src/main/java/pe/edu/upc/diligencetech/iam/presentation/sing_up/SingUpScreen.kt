@@ -1,4 +1,4 @@
-package pe.edu.upc.diligencetech.iam.presentation.sing_in
+package pe.edu.upc.diligencetech.iam.presentation.sing_up
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,9 +51,9 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun SignInScreen() {
-
-    var username by remember { mutableStateOf("") }
+fun SignUpScreen() {
+    var firstname by remember { mutableStateOf("") }
+    var lastname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -97,7 +97,7 @@ fun SignInScreen() {
                         .padding(20.dp)
                 ) {
                     Text(
-                        text = "Iniciar sesión",
+                        text = "Registrarse",
                         style = TextStyle(
                             fontSize = 24.sp,
                             color = Color.White,
@@ -113,7 +113,7 @@ fun SignInScreen() {
                         modifier = Modifier.padding(bottom = 50.dp)
                     ) {
                         Text(
-                            text = "¿No tienes una cuenta aún?",
+                            text = "¿Ya tienes una cuenta?",
                             style = TextStyle(
                                 color = Color.White,
                                 fontFamily = Montserrat,
@@ -121,7 +121,7 @@ fun SignInScreen() {
                             )
                         )
                         Text(
-                            text = "Regístrate",
+                            text = "Inicia sesión",
                             style = TextStyle(
                                 color = accentColor,
                                 textDecoration = TextDecoration.Underline,
@@ -131,32 +131,69 @@ fun SignInScreen() {
                         )
                     }
 
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        textStyle = TextStyle(
-                            fontSize = 15.sp,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Normal
-                        ),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            unfocusedBorderColor = Color.LightGray,
-                            containerColor = Color.White
-                        ),
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(52.dp),
-                        placeholder = {
-                            Text(
-                                text = "Usuario",
-                                color = Color.LightGray,
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre los campos
+                    ) {
+                        // Campo de texto para el Nombre
+                        OutlinedTextField(
+                            value = firstname,
+                            onValueChange = { firstname = it },
+                            textStyle = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Normal
-                            )
-                        }
-                    )
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = Color.LightGray,
+                                containerColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .weight(1f) // Asegura que ambos campos ocupen el mismo espacio en la fila
+                                .height(52.dp),
+                            placeholder = {
+                                Text(
+                                    text = "Nombre*",
+                                    color = Color.LightGray,
+                                    fontSize = 15.sp,
+                                    fontFamily = Montserrat,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                        )
+
+                        // Campo de texto para el Apellido
+                        OutlinedTextField(
+                            value = lastname,
+                            onValueChange = { lastname = it },
+                            textStyle = TextStyle(
+                                fontSize = 15.sp,
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = Color.LightGray,
+                                containerColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .weight(1f) // Ambos ocupan el mismo espacio en la fila
+                                .height(52.dp),
+                            placeholder = {
+                                Text(
+                                    text = "Apellido*",
+                                    color = Color.LightGray,
+                                    fontSize = 15.sp,
+                                    fontFamily = Montserrat,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                        )
+                    }
+
                     Box(modifier = Modifier.padding(top = 8.dp)) {
                         OutlinedTextField(
                             value = password,
@@ -215,7 +252,7 @@ fun SignInScreen() {
                             .padding(top = 16.dp)
                     ) {
                         Text(
-                            text = "Iniciar sesión",
+                            text = "Registrarse",
                             color = Color.White,
                             style = TextStyle(
                                 fontFamily = Montserrat,
@@ -244,7 +281,7 @@ fun SignInScreen() {
                             )
 
                             Text(
-                                text = "o inicia sesión con",
+                                text = "o registrate con",
                                 color = Color(0xFFD9D9D9),
                                 modifier = Modifier
                                     .padding(horizontal = 8.dp)
