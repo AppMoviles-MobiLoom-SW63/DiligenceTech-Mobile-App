@@ -20,6 +20,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -54,7 +56,10 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 fun SignUpScreen() {
     var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var acceptTerms by remember { mutableStateOf(false) }
+
     var passwordVisible by remember { mutableStateOf(false) }
 
     val screenBackgroundColor = Color(0xFF1A1A1A)
@@ -135,9 +140,8 @@ fun SignUpScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre los campos
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Campo de texto para el Nombre
                         OutlinedTextField(
                             value = firstname,
                             onValueChange = { firstname = it },
@@ -152,7 +156,7 @@ fun SignUpScreen() {
                                 containerColor = Color.White
                             ),
                             modifier = Modifier
-                                .weight(1f) // Asegura que ambos campos ocupen el mismo espacio en la fila
+                                .weight(1f)
                                 .height(52.dp),
                             placeholder = {
                                 Text(
@@ -165,7 +169,6 @@ fun SignUpScreen() {
                             }
                         )
 
-                        // Campo de texto para el Apellido
                         OutlinedTextField(
                             value = lastname,
                             onValueChange = { lastname = it },
@@ -180,7 +183,7 @@ fun SignUpScreen() {
                                 containerColor = Color.White
                             ),
                             modifier = Modifier
-                                .weight(1f) // Ambos ocupan el mismo espacio en la fila
+                                .weight(1f)
                                 .height(52.dp),
                             placeholder = {
                                 Text(
@@ -194,6 +197,34 @@ fun SignUpScreen() {
                         )
                     }
 
+                    Box(modifier = Modifier.padding(top = 8.dp)){
+                        OutlinedTextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            textStyle = TextStyle(
+                                fontSize = 15.sp,
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = Color.LightGray,
+                                containerColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            placeholder = {
+                                Text(
+                                    text = "Correo electrónico*",
+                                    color = Color.LightGray,
+                                    fontSize = 15.sp,
+                                    fontFamily = Montserrat,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                        )
+                    }
                     Box(modifier = Modifier.padding(top = 8.dp)) {
                         OutlinedTextField(
                             value = password,
@@ -213,7 +244,7 @@ fun SignUpScreen() {
                                 .height(52.dp),
                             placeholder = {
                                 Text(
-                                    text = "Contraseña",
+                                    text = "Contraseña*",
                                     color = Color.LightGray,
                                     fontSize = 15.sp,
                                     fontFamily = Montserrat,
@@ -225,22 +256,40 @@ fun SignUpScreen() {
                         )
                     }
                     Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(top = 20.dp, bottom = 40.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                            .fillMaxWidth()
+                            .padding(top = 5.dp)
                     ) {
+                        Checkbox(
+                            checked = acceptTerms,
+                            onCheckedChange = { acceptTerms = it },
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = accentColor,
+                                checkmarkColor = Color.White
+                            )
+                        )
                         Text(
-                            text = "¿Olvidaste tu contraseña?",
+                            text = "Acepto los ",
                             style = TextStyle(
-                                color = accentColor,
-                                textDecoration = TextDecoration.Underline,
+                                fontSize = 14.sp,
                                 fontFamily = Montserrat,
-                                fontWeight = FontWeight.Normal
-                            ),
-                            modifier = Modifier.padding(top = 16.dp)
+                                fontWeight = FontWeight.Normal,
+                                color = Color.White
+                            )
+                        )
+                        Text(
+                            text = "Términos y condiciones",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Normal,
+                                color = accentColor,
+                                textDecoration = TextDecoration.Underline
+                            )
                         )
                     }
+
                     Button(
                         onClick = { },
                         colors = ButtonDefaults.buttonColors(
