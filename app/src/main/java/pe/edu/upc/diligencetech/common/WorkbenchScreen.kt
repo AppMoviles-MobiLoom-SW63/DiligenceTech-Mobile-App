@@ -40,7 +40,12 @@ import pe.edu.upc.diligencetech.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkbenchScreen(
-    content: @Composable () -> Unit
+    onHomeClick: () -> Unit,
+    onProjectsClick: () -> Unit,
+    onMessagesClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -72,7 +77,13 @@ fun WorkbenchScreen(
             )
         },
         bottomBar = {
-            BottomBar()
+            BottomBar(
+                onHomeClick = onHomeClick,
+                onProjectsClick = onProjectsClick,
+                onMessagesClick = onMessagesClick,
+                onProfileClick = onProfileClick,
+                onSettingsClick = onSettingsClick,
+            )
         }
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
@@ -82,7 +93,13 @@ fun WorkbenchScreen(
 }
 
 @Composable
-fun BottomBar() {
+fun BottomBar(
+    onHomeClick: () -> Unit,
+    onProjectsClick: () -> Unit,
+    onMessagesClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+) {
     Row (
         modifier = Modifier
             .background(Constants.CARD_BACKGROUND_COLOR)
@@ -94,31 +111,31 @@ fun BottomBar() {
             imageVector = Icons.Filled.Home,
             text = "Inicio"
         ) {
-
+            onHomeClick()
         }
         BottomBarItem(
             imageVector = Icons.Filled.DateRange,
             text = "Proyectos"
         ) {
-
+            onProjectsClick()
         }
         BottomBarItem(
             imageVector = Icons.Filled.Email,
             text = "Mensajes"
         ) {
-
+            onMessagesClick()
         }
         BottomBarItem(
             imageVector = Icons.Filled.Person,
             text = "Perfil"
         ) {
-
+            onProfileClick()
         }
         BottomBarItem(
             imageVector = Icons.Filled.Settings,
             text = "Ajustes"
         ) {
-
+            onSettingsClick()
         }
     }
 }

@@ -1,11 +1,11 @@
-package pe.edu.upc.diligencetech.dashboard.presentation
+package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 
 @Composable
-fun DashboardScreen(
+fun ProjectsListScreen(
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
@@ -17,6 +17,6 @@ fun DashboardScreen(
     onMessagesClick = onMessagesClick,
     onProfileClick = onProfileClick,
     onSettingsClick = onSettingsClick
-    ) {
-    Text("Dashboard")
+) {
+    Text("Projects List")
 }

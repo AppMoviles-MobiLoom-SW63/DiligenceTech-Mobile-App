@@ -4,37 +4,101 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import pe.edu.upc.diligencetech.communications.presentation.ProjectsListForCommunicationsScreen
 import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_up.SignUpScreen
+import pe.edu.upc.diligencetech.profile.presentation.ProfileScreen
+import pe.edu.upc.diligencetech.settings.presentation.SettingsScreen
 
 @Composable
 fun Home() {
     val authenticationGuard = AuthenticationGuard()
     val navController = rememberNavController()
 
+    fun guard() {
+        authenticationGuard.guard {
+            navController.navigate("sign-in") {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
+    fun clearBackStackAndNavigateTo(destination: String) {
+        navController.navigate(destination) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
+
     NavHost(navController = navController, startDestination = "dashboard") {
         composable("sign-up") {
             SignUpScreen(
                 onSignUpTask = {
-                    navController.navigate("dashboard")
+                    clearBackStackAndNavigateTo("dashboard")
                 },
                 onSignInTask = {
-                    navController.popBackStack()
+                    clearBackStackAndNavigateTo("sign-in")
                 })
         }
         composable("sign-in") {
             SignInScreen(
                 onSignUpTask = {
-                    navController.navigate("sign-up")
+                    clearBackStackAndNavigateTo("sign-up")
                 },
                 onSignInTask = {
-                    navController.navigate("dashboard")
+                    clearBackStackAndNavigateTo("dashboard")
                 })
         }
         composable("dashboard") {
-            authenticationGuard.guard { navController.navigate("sign-in") }
-            DashboardScreen()
+            guard()
+            DashboardScreen(
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            )
+        }
+        composable("projects") {
+            guard()
+            ProjectsListScreen (
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            )
+        }
+        composable("messages") {
+            guard()
+            ProjectsListForCommunicationsScreen(
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            )
+        }
+        composable("profile") {
+            guard()
+            ProfileScreen (
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            )
+        }
+        composable("settings") {
+            guard()
+            SettingsScreen (
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            )
         }
     }
 }
