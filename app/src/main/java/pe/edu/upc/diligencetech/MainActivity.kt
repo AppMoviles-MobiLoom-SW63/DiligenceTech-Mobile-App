@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import pe.edu.upc.diligencetech.common.Home
 import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_up.SignUpScreen
 import pe.edu.upc.diligencetech.ui.theme.DiligenceTechAppTheme
@@ -14,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DiligenceTechAppTheme {
-                SignUpScreen()
+                Home()
             }
         }
     }

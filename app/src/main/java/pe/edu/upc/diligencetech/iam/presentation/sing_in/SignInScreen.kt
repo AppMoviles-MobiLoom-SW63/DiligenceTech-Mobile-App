@@ -49,9 +49,8 @@ import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SignInScreen() {
+fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -120,15 +119,23 @@ fun SignInScreen() {
                                 fontWeight = FontWeight.Normal
                             )
                         )
-                        Text(
-                            text = "Regístrate",
-                            style = TextStyle(
-                                color = accentColor,
-                                textDecoration = TextDecoration.Underline,
-                                fontFamily = Montserrat,
-                                fontWeight = FontWeight.Normal
+                        Card(
+                            onClick = onSignUpTask,
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            ),
+                        ) {
+                            Text(
+                                text = "Regístrate",
+                                style = TextStyle(
+                                    color = accentColor,
+                                    textDecoration = TextDecoration.Underline,
+                                    fontFamily = Montserrat,
+                                    fontWeight = FontWeight.Normal
+                                )
                             )
-                        )
+
+                        }
                     }
 
                     OutlinedTextField(

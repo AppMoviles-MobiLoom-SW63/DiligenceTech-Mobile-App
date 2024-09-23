@@ -47,19 +47,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
     var firstname by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var acceptTerms by remember { mutableStateOf(false) }
-
     var passwordVisible by remember { mutableStateOf(false) }
 
     val screenBackgroundColor = Color(0xFF1A1A1A)
@@ -125,15 +124,22 @@ fun SignUpScreen() {
                                 fontWeight = FontWeight.Normal
                             )
                         )
-                        Text(
-                            text = "Inicia sesión",
-                            style = TextStyle(
-                                color = accentColor,
-                                textDecoration = TextDecoration.Underline,
-                                fontFamily = Montserrat,
-                                fontWeight = FontWeight.Normal
+                        Card(
+                            onClick = onSignInTask,
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
+                            ),
+                        ) {
+                            Text(
+                                text = "Inicia sesión",
+                                style = TextStyle(
+                                    color = accentColor,
+                                    textDecoration = TextDecoration.Underline,
+                                    fontFamily = Montserrat,
+                                    fontWeight = FontWeight.Normal
+                                )
                             )
-                        )
+                        }
                     }
 
                     Row(
