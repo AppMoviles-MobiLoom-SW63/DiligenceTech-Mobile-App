@@ -27,10 +27,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,23 +38,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
-
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    val screenBackgroundColor = Color(0xFF1A1A1A)
-    val cardBackgroundColor = Color(0xFF282828)
-    val accentColor = Color(0xFFD6773D)
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () -> Unit, onSignInTask: (token: String) -> Unit) {
+    val username = viewModel.username.value
+    val password = viewModel.password.value
+    val passwordVisible = viewModel.passwordVisible.value
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -66,7 +58,7 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(screenBackgroundColor)
+                .background(Constants.SCREEN_BACKGROUND_COLOR)
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -84,7 +76,7 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = cardBackgroundColor
+                    containerColor = Constants.CARD_BACKGROUND_COLOR
                 ),
                 shape = RoundedCornerShape(30.dp)
             ) {
@@ -128,7 +120,7 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
                             Text(
                                 text = "Regístrate",
                                 style = TextStyle(
-                                    color = accentColor,
+                                    color = Constants.ACCENT_COLOR,
                                     textDecoration = TextDecoration.Underline,
                                     fontFamily = Montserrat,
                                     fontWeight = FontWeight.Normal
@@ -140,7 +132,7 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
 
                     OutlinedTextField(
                         value = username,
-                        onValueChange = { username = it },
+                        onValueChange = { viewModel.onUsernameChange(it) },
                         textStyle = TextStyle(
                             fontSize = 15.sp,
                             fontFamily = Montserrat,
@@ -167,7 +159,7 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
                     Box(modifier = Modifier.padding(top = 8.dp)) {
                         OutlinedTextField(
                             value = password,
-                            onValueChange = { password = it },
+                            onValueChange = { viewModel.onPasswordChange(it) },
                             textStyle = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
@@ -203,7 +195,7 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
                         Text(
                             text = "¿Olvidaste tu contraseña?",
                             style = TextStyle(
-                                color = accentColor,
+                                color = Constants.ACCENT_COLOR,
                                 textDecoration = TextDecoration.Underline,
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Normal
@@ -212,9 +204,11 @@ fun SignInScreen(onSignUpTask: () -> Unit, onSignInTask: () -> Unit) {
                         )
                     }
                     Button(
-                        onClick = { },
+                        onClick = {
+                            viewModel.signIn(onSignInTask)
+                        },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = accentColor
+                            containerColor = Constants.ACCENT_COLOR
                         ),
                         modifier = Modifier
                             .fillMaxWidth()

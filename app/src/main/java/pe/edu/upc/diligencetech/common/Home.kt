@@ -1,6 +1,8 @@
 package pe.edu.upc.diligencetech.common
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -14,8 +16,10 @@ import pe.edu.upc.diligencetech.settings.presentation.SettingsScreen
 
 @Composable
 fun Home() {
-    val authenticationGuard = AuthenticationGuard()
+    val authenticationGuard = remember { AuthenticationGuard() }
     val navController = rememberNavController()
+
+
 
     fun guard() {
         authenticationGuard.guard {
@@ -46,7 +50,8 @@ fun Home() {
                 onSignUpTask = {
                     clearBackStackAndNavigateTo("sign-up")
                 },
-                onSignInTask = {
+                onSignInTask = { token ->
+                    authenticationGuard.signIn(token)
                     clearBackStackAndNavigateTo("dashboard")
                 })
         }
