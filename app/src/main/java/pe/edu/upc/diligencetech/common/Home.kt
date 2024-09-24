@@ -39,7 +39,7 @@ fun Home() {
         composable("sign-up") {
             SignUpScreen(
                 onSignUpTask = {
-                    clearBackStackAndNavigateTo("dashboard")
+                    clearBackStackAndNavigateTo("sign-in")
                 },
                 onSignInTask = {
                     clearBackStackAndNavigateTo("sign-in")

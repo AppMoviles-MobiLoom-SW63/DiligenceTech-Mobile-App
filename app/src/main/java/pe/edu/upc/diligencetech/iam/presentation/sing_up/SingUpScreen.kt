@@ -47,23 +47,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
-    var firstname by remember { mutableStateOf("") }
-    var lastname by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var acceptTerms by remember { mutableStateOf(false) }
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    val screenBackgroundColor = Color(0xFF1A1A1A)
-    val cardBackgroundColor = Color(0xFF282828)
-    val accentColor = Color(0xFFD6773D)
+fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
+    val firstname = viewModel.firstname.value
+    val lastname = viewModel.lastname.value
+    val email = viewModel.email.value
+    val password = viewModel.password.value
+    val acceptTerms = viewModel.acceptTerms.value
+    val passwordVisible = viewModel.passwordVisible.value
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -71,7 +69,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(screenBackgroundColor)
+                .background(Constants.SCREEN_BACKGROUND_COLOR)
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -89,7 +87,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = cardBackgroundColor
+                    containerColor = Constants.CARD_BACKGROUND_COLOR
                 ),
                 shape = RoundedCornerShape(30.dp)
             ) {
@@ -133,7 +131,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                             Text(
                                 text = "Inicia sesión",
                                 style = TextStyle(
-                                    color = accentColor,
+                                    color = Constants.ACCENT_COLOR,
                                     textDecoration = TextDecoration.Underline,
                                     fontFamily = Montserrat,
                                     fontWeight = FontWeight.Normal
@@ -150,7 +148,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                     ) {
                         OutlinedTextField(
                             value = firstname,
-                            onValueChange = { firstname = it },
+                            onValueChange = { viewModel.onFirstnameChange(it) },
                             textStyle = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
@@ -177,7 +175,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
 
                         OutlinedTextField(
                             value = lastname,
-                            onValueChange = { lastname = it },
+                            onValueChange = { viewModel.onLastnameChange(it) },
                             textStyle = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
@@ -206,7 +204,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                     Box(modifier = Modifier.padding(top = 8.dp)){
                         OutlinedTextField(
                             value = email,
-                            onValueChange = { email = it },
+                            onValueChange = { viewModel.onEmailChange(it) },
                             textStyle = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
@@ -234,7 +232,7 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                     Box(modifier = Modifier.padding(top = 8.dp)) {
                         OutlinedTextField(
                             value = password,
-                            onValueChange = { password = it },
+                            onValueChange = { viewModel.onPasswordChange(it) },
                             textStyle = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
@@ -269,9 +267,9 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                     ) {
                         Checkbox(
                             checked = acceptTerms,
-                            onCheckedChange = { acceptTerms = it },
+                            onCheckedChange = { viewModel.onAcceptTermsChange(it) },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = accentColor,
+                                checkedColor = Constants.ACCENT_COLOR,
                                 checkmarkColor = Color.White
                             )
                         )
@@ -290,16 +288,18 @@ fun SignUpScreen(onSignInTask: () -> Unit, onSignUpTask: () -> Unit) {
                                 fontSize = 14.sp,
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Normal,
-                                color = accentColor,
+                                color = Constants.ACCENT_COLOR,
                                 textDecoration = TextDecoration.Underline
                             )
                         )
                     }
 
                     Button(
-                        onClick = { },
+                        onClick = {
+                            viewModel.signUp(onSignUpTask)
+                                  },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = accentColor
+                            containerColor = Constants.ACCENT_COLOR
                         ),
                         modifier = Modifier
                             .fillMaxWidth()

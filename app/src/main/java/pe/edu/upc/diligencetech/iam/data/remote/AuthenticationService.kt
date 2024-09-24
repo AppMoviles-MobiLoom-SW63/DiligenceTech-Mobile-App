@@ -24,6 +24,5 @@ interface AuthenticationService {
         ]
     )
     @POST("authentication/sign-in")
-    fun signIn(@Body signInResource: SignInResource):
-    Call<SignInDto?>
+    fun signIn(@Body signInResource: SignInResource): Call<SignInDto?>
 }
