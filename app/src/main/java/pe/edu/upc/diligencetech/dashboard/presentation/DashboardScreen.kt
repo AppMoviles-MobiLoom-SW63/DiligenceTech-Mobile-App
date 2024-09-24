@@ -1,5 +1,6 @@
 package pe.edu.upc.diligencetech.dashboard.presentation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
@@ -17,6 +18,6 @@ fun DashboardScreen(
     onMessagesClick = onMessagesClick,
     onProfileClick = onProfileClick,
     onSettingsClick = onSettingsClick
-    ) {
+) {
     Text("Dashboard")
 }
