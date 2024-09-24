@@ -1,4 +1,4 @@
-package pe.edu.upc.diligencetech.duediligencemanagement.data.remote
+package pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos
 
 import com.google.gson.annotations.SerializedName
 

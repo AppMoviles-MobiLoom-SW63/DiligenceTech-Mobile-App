@@ -2,7 +2,6 @@ package pe.edu.upc.diligencetech.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,7 +10,7 @@ import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_up.SignUpScreen
-import pe.edu.upc.diligencetech.profile.presentation.ProfileScreen
+import pe.edu.upc.diligencetech.profiles.presentation.ProfileScreen
 import pe.edu.upc.diligencetech.settings.presentation.SettingsScreen
 
 @Composable

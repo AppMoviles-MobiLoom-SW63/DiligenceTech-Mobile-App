@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreaService
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
 import pe.edu.upc.diligencetech.iam.data.remote.AuthenticationService
 import pe.edu.upc.diligencetech.iam.data.repositories.AuthenticationRepository
 import retrofit2.Retrofit
@@ -48,8 +48,8 @@ object DiligenceTechModule {
     fun provideAreaService(
         authenticationGuard: AuthenticationGuard,
         retrofit: Retrofit
-    ): AreaService {
-        return retrofit.create(AreaService::class.java).apply {
+    ): AreasService {
+        return retrofit.create(AreasService::class.java).apply {
             // Use authenticationGuard if needed
         }
     }
