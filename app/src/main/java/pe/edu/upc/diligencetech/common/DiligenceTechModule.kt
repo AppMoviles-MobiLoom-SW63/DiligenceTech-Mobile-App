@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
 import pe.edu.upc.diligencetech.iam.data.remote.AuthenticationService
 import pe.edu.upc.diligencetech.iam.data.repositories.AuthenticationRepository
@@ -17,9 +18,24 @@ import javax.inject.Singleton
 object DiligenceTechModule {
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideAuthInterceptor(): AuthInterceptor {
+        return AuthInterceptor { Constants.token }
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

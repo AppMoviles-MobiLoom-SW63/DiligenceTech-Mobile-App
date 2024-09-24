@@ -1,6 +1,7 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos
 
 import com.google.gson.annotations.SerializedName
+import pe.edu.upc.diligencetech.duediligencemanagement.domain.Document
 
 data class DocumentDto(
     @SerializedName("fileUrl")
@@ -12,3 +13,5 @@ data class DocumentDto(
     @SerializedName("id")
     val id: Long
 )
+
+fun DocumentDto.toDocument() = Document(filename, fileUrl)

@@ -47,7 +47,7 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () -> Unit, onSignInTask: (token: String) -> Unit) {
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () -> Unit, onSignInTask: (id: Long, username: String,token: String) -> Unit) {
     val username = viewModel.username.value
     val password = viewModel.password.value
     val passwordVisible = viewModel.passwordVisible.value

@@ -49,8 +49,8 @@ fun Home() {
                 onSignUpTask = {
                     clearBackStackAndNavigateTo("sign-up")
                 },
-                onSignInTask = { token ->
-                    authenticationGuard.signIn(token)
+                onSignInTask = { id, username, token ->
+                    authenticationGuard.signIn(id, username, token)
                     clearBackStackAndNavigateTo("dashboard")
                 })
         }

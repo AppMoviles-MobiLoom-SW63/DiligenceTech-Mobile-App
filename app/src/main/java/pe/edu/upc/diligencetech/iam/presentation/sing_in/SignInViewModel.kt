@@ -25,7 +25,7 @@ class SignInViewModel @Inject constructor(
     private val _passwordVisible = mutableStateOf(false)
     val passwordVisible: State<Boolean> get() = _passwordVisible
 
-    fun signIn(onSuccessfulSignIn: (token: String) -> Unit) {
+    fun signIn(onSuccessfulSignIn: (id: Long, username: String, token: String) -> Unit) {
         val signInResource = SignInResource(
             username = username.value,
             password = password.value
@@ -36,7 +36,7 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
             val result = repository.signIn(signInResource)
             if (result is Resource.Success) {
-                onSuccessfulSignIn(result.data!!.token)
+                onSuccessfulSignIn(result.data!!.id.toLong(), result.data.username, result.data.token)
             }
         }
     }
