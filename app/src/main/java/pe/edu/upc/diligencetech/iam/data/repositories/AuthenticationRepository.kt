@@ -15,23 +15,34 @@ class AuthenticationRepository(
 ) {
     suspend fun signIn(signInResource: SignInResource): Resource<AuthenticatedUser> =
         withContext(Dispatchers.IO) {
-            val response = service.signIn(signInResource).execute()
-            if (response.isSuccessful) {
-                val user = response.body()?.toAuthenticatedUser()
-                Log.d("user", "Response: ${response}")
+            try {
+                val response = service.signIn(signInResource).execute()
+                if (response.isSuccessful) {
+                    val user = response.body()?.toAuthenticatedUser()
+                    Log.d("user", "Response: ${response}")
 
-                if (user != null) {
-                    return@withContext Resource.Success(user)
+                    if (user != null) {
+                        return@withContext Resource.Success(user)
+                    }
+                    return@withContext Resource.Error("User not found")
                 }
-                return@withContext Resource.Error("User not found")
+                Log.d(
+                    "SignInResource",
+                    "Username: ${signInResource.username}, Password: ${signInResource.password}"
+                )
+                return@withContext Resource.Error(response.message())
+            } catch (e: Exception) {
+                return@withContext Resource.Error(e.message ?: "An error occurred")
             }
-            Log.d("SignInResource", "Username: ${signInResource.username}, Password: ${signInResource.password}")
-            return@withContext Resource.Error(response.message())
         }
 
     suspend fun signUp(signUpDto: SignUpResource): Boolean
     = withContext(Dispatchers.IO) {
-        val response = service.signUp(signUpDto).execute()
-        return@withContext response.isSuccessful
+        try {
+            val response = service.signUp(signUpDto).execute()
+            return@withContext response.isSuccessful
+        } catch (e: Exception) {
+            return@withContext false
+        }
     }
 }

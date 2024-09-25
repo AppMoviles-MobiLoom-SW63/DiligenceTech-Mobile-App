@@ -1,4 +1,4 @@
-package pe.edu.upc.diligencetech.profile.presentation
+package pe.edu.upc.diligencetech.profiles.presentation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

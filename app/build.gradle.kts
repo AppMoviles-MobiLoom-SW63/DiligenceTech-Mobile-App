@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android.gradle.plugin.v252)
     implementation(libs.hilt.android)
+    implementation(libs.logging.interceptor)
     kapt(libs.google.hilt.android.compiler)
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)

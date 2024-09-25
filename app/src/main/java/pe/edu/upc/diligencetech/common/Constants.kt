@@ -11,4 +11,7 @@ object Constants {
     val SCREEN_BACKGROUND_COLOR = Color(0xFF1A1A1A)
     val CARD_BACKGROUND_COLOR = Color(0xFF282828)
     val ACCENT_COLOR = Color(0xFFD6773D)
+    var token: String? = null
+    var id: Long? = null
+    var username: String? = null
 }
