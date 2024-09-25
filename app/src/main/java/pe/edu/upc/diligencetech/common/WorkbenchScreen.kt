@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
@@ -28,15 +31,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pe.edu.upc.diligencetech.R
-
+import pe.edu.upc.diligencetech.ui.theme.Montserrat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkbenchScreen(
@@ -47,28 +54,40 @@ fun WorkbenchScreen(
     onSettingsClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val selectedOption = remember { mutableStateOf("Inicio") }
+
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(110.dp),
                 title = {
-                    Image(
-                        painter = painterResource(id = R.drawable.brand),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(187.dp, 100.dp)
-                            .padding(bottom = 8.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                },
-                actions = {
-                    IconButton(onClick = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
 
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Notifications,
-                            contentDescription = "Notifications",
-                            tint = Color.White
-                        )
+                                painter = painterResource(id = R.drawable.brand),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(start = 35.dp)
+                                    .size(170.dp, 90.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                        IconButton(onClick = {
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Notifications,
+                                contentDescription = "Notifications",
+                                tint = Color.White
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -78,29 +97,51 @@ fun WorkbenchScreen(
         },
         bottomBar = {
             BottomBar(
-                onHomeClick = onHomeClick,
-                onProjectsClick = onProjectsClick,
-                onMessagesClick = onMessagesClick,
-                onProfileClick = onProfileClick,
-                onSettingsClick = onSettingsClick,
+                selectedOption = selectedOption.value,
+                onHomeClick = {
+                    selectedOption.value = "Inicio"
+                    onHomeClick()
+                },
+                onProjectsClick = {
+                    selectedOption.value = "Proyectos"
+                    onProjectsClick()
+                },
+                onMessagesClick = {
+                    selectedOption.value = "Mensajes"
+                    onMessagesClick()
+                },
+                onProfileClick = {
+                    selectedOption.value = "Perfil"
+                    onProfileClick()
+                },
+                onSettingsClick = {
+                    selectedOption.value = "Ajustes"
+                    onSettingsClick()
+                },
             )
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+        ) {
             content()
         }
     }
 }
 
+
+
 @Composable
 fun BottomBar(
+    selectedOption: String,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
 ) {
-    Row (
+    Row(
         modifier = Modifier
             .background(Constants.CARD_BACKGROUND_COLOR)
             .fillMaxWidth()
@@ -109,39 +150,47 @@ fun BottomBar(
     ) {
         BottomBarItem(
             imageVector = Icons.Filled.Home,
-            text = "Inicio"
-        ) {
-            onHomeClick()
-        }
+            text = "Inicio",
+            isSelected = selectedOption == "Inicio",
+            onClick = onHomeClick
+        )
         BottomBarItem(
             imageVector = Icons.Filled.DateRange,
-            text = "Proyectos"
-        ) {
-            onProjectsClick()
-        }
+            text = "Proyectos",
+            isSelected = selectedOption == "Proyectos",
+            onClick = onProjectsClick
+        )
         BottomBarItem(
             imageVector = Icons.Filled.Email,
-            text = "Mensajes"
-        ) {
-            onMessagesClick()
-        }
+            text = "Mensajes",
+            isSelected = selectedOption == "Mensajes",
+            onClick = onMessagesClick
+        )
         BottomBarItem(
             imageVector = Icons.Filled.Person,
-            text = "Perfil"
-        ) {
-            onProfileClick()
-        }
+            text = "Perfil",
+            isSelected = selectedOption == "Perfil",
+            onClick = onProfileClick
+        )
         BottomBarItem(
             imageVector = Icons.Filled.Settings,
-            text = "Ajustes"
-        ) {
-            onSettingsClick()
-        }
+            text = "Ajustes",
+            isSelected = selectedOption == "Ajustes",
+            onClick = onSettingsClick
+        )
     }
 }
 
 @Composable
-fun BottomBarItem(imageVector: ImageVector, text: String, onClick: () -> Unit = {}) {
+fun BottomBarItem(
+    imageVector: ImageVector,
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit = {}
+) {
+    val selectedColor = Color(0xFFD6773D)
+    val unselectedColor = Color.White
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
@@ -155,9 +204,16 @@ fun BottomBarItem(imageVector: ImageVector, text: String, onClick: () -> Unit = 
             Icon(
                 imageVector = imageVector,
                 contentDescription = text,
-                tint = Color.White
+                tint = if (isSelected) selectedColor else unselectedColor
             )
-            Text(text, color = Color.White)
+            Text(
+                text = text,
+                style = TextStyle(
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Normal,
+                    color = if (isSelected) selectedColor else unselectedColor
+                )
+            )
         }
     }
 }
