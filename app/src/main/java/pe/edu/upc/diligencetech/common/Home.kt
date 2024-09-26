@@ -55,7 +55,7 @@ fun Home() {
                 },
                 onSignInTask = { id, username, token ->
                     authenticationGuard.signIn(id, username, token)
-                    clearBackStackAndNavigateTo("dashboard")
+                    clearBackStackAndNavigateTo("projects")
                 })
         }
         composable("dashboard") {

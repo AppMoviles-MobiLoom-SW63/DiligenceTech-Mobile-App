@@ -39,7 +39,7 @@ interface FoldersService {
         ]
     )
     @POST("folders")
-    suspend fun createFolder(@Body folderResource: FolderResource): Call<FolderDto?>
+    suspend fun createFolder(@Body folderResource: FolderResource): Response<FolderDto?>
 
     @Headers(
         value = [

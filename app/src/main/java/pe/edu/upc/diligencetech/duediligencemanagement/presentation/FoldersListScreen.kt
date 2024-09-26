@@ -153,7 +153,7 @@ fun FoldersListScreen(
                 }
 
                 if (showDialog) {
-                    AreaInputDialog(
+                    FolderInputDialog (
                         onDismiss = { showDialog = false },
                         onAddProject = {
                             showDialog = false
@@ -242,11 +242,11 @@ fun FolderCard(projectName: String, projectType: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderInputDialog(
-    viewModel: AreasListViewModel = hiltViewModel(),
+    viewModel: FoldersListViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
     onAddProject: () -> Unit
 ) {
-    val newArea = viewModel.newArea
+    val newFolder = viewModel.newFolder
 
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -276,9 +276,9 @@ fun FolderInputDialog(
 
 
                 OutlinedTextField(
-                    value = newArea.value,
+                    value = newFolder.value,
                     onValueChange = {
-                        viewModel.onNewAreaChange(it)
+                        viewModel.onNewFolderChange(it)
                     },
                     label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
                     placeholder = { Text("Ingrese nombre", fontFamily = Montserrat, color = Color.Gray) },
@@ -301,7 +301,7 @@ fun FolderInputDialog(
                 ) {
                     Button(
                         onClick = {
-                            onAddProject()
+                            onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
@@ -323,7 +323,7 @@ fun FolderInputDialog(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Button(
-                        onClick = onDismiss,
+                        onClick = onAddProject,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFD6773D),
                             contentColor = Color.White

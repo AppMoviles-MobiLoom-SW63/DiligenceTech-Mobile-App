@@ -33,7 +33,7 @@ class FoldersRepository(
     suspend fun createFolder(folderResource: FolderResource): Resource<List<Folder>>
     = withContext(Dispatchers.IO) {
         try {
-            val response = foldersService.createFolder(folderResource).execute()
+            val response = foldersService.createFolder(folderResource)
             if (response.isSuccessful) {
                 val resource = getFoldersByAreaId(folderResource.areaId)
                 return@withContext resource

@@ -41,7 +41,7 @@ interface AreasService {
         ]
     )
     @POST("areas")
-    suspend fun createArea(@Body areaResource: AreaResource): Call<AreaDto?>
+    suspend fun createArea(@Body areaResource: AreaResource): Response<AreaDto?>
 
     @Headers(
         value = [

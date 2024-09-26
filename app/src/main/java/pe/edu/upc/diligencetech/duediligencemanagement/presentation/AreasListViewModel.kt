@@ -1,5 +1,6 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -45,7 +46,7 @@ class AreasListViewModel @Inject constructor(
 
     fun addArea(projectId: Long): Boolean {
         viewModelScope.launch {
-            val areaResource = AreaResource(newArea.value, projectId)
+            val areaResource = AreaResource(projectId, newArea.value)
             val resource = repository.createArea(areaResource)
             if (resource is Resource.Success) {
                 _areas.clear()

@@ -15,8 +15,8 @@ class AreasRepository(
     suspend fun createArea(areaResource: AreaResource): Resource<List<Area>> =
         withContext(Dispatchers.IO) {
             try {
-                Log.d("Paso Area", "Yes")
-                val response = areasService.createArea(areaResource).execute()
+                Log.d("Paso Area", "$areaResource")
+                val response = areasService.createArea(areaResource)
                 if (response.isSuccessful) {
                     Log.d("Area Success", "Yes")
                     val resource = getAreasByProjectId(areaResource.projectId)

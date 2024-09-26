@@ -312,7 +312,7 @@ fun AreaInputDialog(
                 ) {
                     Button(
                         onClick = {
-                            onAddProject()
+                            onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
@@ -334,7 +334,7 @@ fun AreaInputDialog(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Button(
-                        onClick = onDismiss,
+                        onClick = onAddProject,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFD6773D),
                             contentColor = Color.White
