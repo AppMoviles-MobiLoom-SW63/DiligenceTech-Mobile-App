@@ -357,7 +357,7 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), onSignInTask: () 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 20.dp, bottom = 30.dp),
+                            .padding(top = 20.dp, bottom = 10.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Button(

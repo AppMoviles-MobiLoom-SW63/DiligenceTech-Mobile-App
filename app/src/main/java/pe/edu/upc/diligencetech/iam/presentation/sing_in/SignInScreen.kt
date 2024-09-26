@@ -148,7 +148,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () 
                             .height(52.dp),
                         placeholder = {
                             Text(
-                                text = "Usuario",
+                                text = "Correo electrónico",
                                 color = Color.LightGray,
                                 fontSize = 15.sp,
                                 fontFamily = Montserrat,
@@ -156,7 +156,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () 
                             )
                         }
                     )
-                    Box(modifier = Modifier.padding(top = 8.dp)) {
+                    Box(modifier = Modifier.padding(top = 8.dp, bottom = 36.dp)) {
                         OutlinedTextField(
                             value = password,
                             onValueChange = { viewModel.onPasswordChange(it) },
@@ -184,23 +184,6 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () 
                             },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 20.dp, bottom = 40.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Text(
-                            text = "¿Olvidaste tu contraseña?",
-                            style = TextStyle(
-                                color = Constants.ACCENT_COLOR,
-                                textDecoration = TextDecoration.Underline,
-                                fontFamily = Montserrat,
-                                fontWeight = FontWeight.Normal
-                            ),
-                            modifier = Modifier.padding(top = 16.dp)
                         )
                     }
                     Button(
