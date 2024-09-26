@@ -48,6 +48,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
@@ -120,7 +121,6 @@ fun ProjectsListScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Row for displaying project cards
                     for (i in 1..4) {
                         Row(
                             modifier = Modifier
@@ -167,9 +167,9 @@ fun ProjectsListScreen(
 fun ProjectCard(projectName: String, projectType: String) {
     Card(
         modifier = Modifier
-            .width(180.dp) // Adjust width proportionally for two cards in a row
+            .width(180.dp)
             .height(180.dp)
-            .clickable { /* Handle click here */ },
+            .clickable {  },
         shape = RoundedCornerShape(30.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
         elevation = CardDefaults.cardElevation(5.dp)
@@ -181,7 +181,6 @@ fun ProjectCard(projectName: String, projectType: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Number at top left (example)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
@@ -194,15 +193,13 @@ fun ProjectCard(projectName: String, projectType: String) {
                 )
             }
 
-            // Folder Icon in the center
             Icon(
-                painter = painterResource(id = R.drawable.project_icon), // Replace with your folder icon
+                painter = painterResource(id = R.drawable.project_icon),
                 contentDescription = "Folder",
                 tint = Color(0xFFD6773D),
                 modifier = Modifier.size(64.dp)
             )
 
-            // Project Name at the bottom
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -230,66 +227,67 @@ fun ProjectInputDialog(
     onDismiss: () -> Unit,
     onAddProject: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = "Crear nuevo Proyecto",
-                style = TextStyle(
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
-            )
-        },
-        text = {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
+                .padding(25.dp)
+        ) {
             Column {
-                // Línea de separación
-                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Crear nuevo proyecto",
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        fontSize = 17.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(1.dp)
-                        .background(Color(0xFF626262)) // Color de la línea
+                        .background(Color(0xFF626262))
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(25.dp))
 
-                // Campos de entrada
+
                 OutlinedTextField(
-                    value = "",
+                    value = "Hola",
                     onValueChange = { },
-                    label = { Text("Nombre", fontFamily = Montserrat, color = Color(0xFFD6773D)) },
+                    label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
                     placeholder = { Text("Ingrese nombre", fontFamily = Montserrat, color = Color.Gray) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
                         cursorColor = Color(0xFFD6773D),
-
                     ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                    shape = RoundedCornerShape(8.dp),
                     textStyle = TextStyle(
-                        color = Color.White, // Color del texto ingresado
-                        fontFamily = Montserrat // Fuente del texto
+                        color = Color.White,
+                        fontFamily = Montserrat
                     )
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier
+                    .height(16.dp)
+                )
 
                 OutlinedTextField(
                     value = "",
                     onValueChange = { },
-                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color(0xFFD6773D)) },
+                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color.White) },
                     placeholder = { Text("Ingrese agentes de compra", fontFamily = Montserrat, color = Color.Gray) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
                         cursorColor = Color(0xFFD6773D),
-
                     ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                    shape = RoundedCornerShape(8.dp),
                     textStyle = TextStyle(
-                        color = Color.White, // Color del texto ingresado
-                        fontFamily = Montserrat // Fuente del texto
+                        color = Color.White,
+                        fontFamily = Montserrat
                     )
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -297,49 +295,67 @@ fun ProjectInputDialog(
                 OutlinedTextField(
                     value = "",
                     onValueChange = { },
-                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color(0xFFD6773D)) },
+                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color.White) },
                     placeholder = { Text("Ingrese agentes de venta", fontFamily = Montserrat, color = Color.Gray) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
                         cursorColor = Color(0xFFD6773D),
                     ),
-                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                    shape = RoundedCornerShape(8.dp),
                     textStyle = TextStyle(
-                        color = Color.White, // Color del texto ingresado
-                        fontFamily = Montserrat // Fuente del texto
+                        color = Color.White,
+                        fontFamily = Montserrat
                     )
                 )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onAddProject()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color(0xFFD6773D)
-                ),
-                modifier = Modifier.padding(end = 8.dp) // Espacio a la derecha
-            ) {
-                Text("Crear")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color(0xFFD6773D)
-                ),
-                modifier = Modifier.padding(start = 8.dp) // Espacio a la izquierda
-            ) {
-                Text("Cancelar")
-            }
-        },
-        modifier = Modifier
-            .background(Color(0xFF282828)) // Fondo del diálogo
-    )
-}
+                Spacer(modifier = Modifier.height(46.dp))
 
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            onAddProject()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color(0xFFD6773D)
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            "Cancelar",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD6773D),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            "Crear",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
