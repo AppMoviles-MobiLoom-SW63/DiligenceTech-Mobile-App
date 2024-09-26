@@ -7,6 +7,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.DueDiligenceProjectsService
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.FoldersService
+import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.AreasRepository
+import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDiligenceProjectsRepository
+import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.FoldersRepository
 import pe.edu.upc.diligencetech.iam.data.remote.AuthenticationService
 import pe.edu.upc.diligencetech.iam.data.repositories.AuthenticationRepository
 import retrofit2.Retrofit
@@ -61,11 +66,51 @@ object DiligenceTechModule {
 
     @Provides
     @Singleton
+    fun provideAreasRepository(areaService: AreasService): AreasRepository {
+        return AreasRepository(areaService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDueDiligenceProjectsRepository(dueDiligenceProjectsService: DueDiligenceProjectsService): DueDiligenceProjectsRepository {
+        return DueDiligenceProjectsRepository(dueDiligenceProjectsService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFoldersRepository(foldersService: FoldersService): FoldersRepository {
+        return FoldersRepository(foldersService)
+    }
+
+    @Provides
+    @Singleton
     fun provideAreaService(
         authenticationGuard: AuthenticationGuard,
         retrofit: Retrofit
     ): AreasService {
         return retrofit.create(AreasService::class.java).apply {
+            // Use authenticationGuard if needed
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideDueDiligenceProjectService(
+        authenticationGuard: AuthenticationGuard,
+        retrofit: Retrofit
+    ): DueDiligenceProjectsService {
+        return retrofit.create(DueDiligenceProjectsService::class.java).apply {
+            // Use authenticationGuard if needed
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideFolderService(
+        authenticationGuard: AuthenticationGuard,
+        retrofit: Retrofit
+    ): FoldersService {
+        return retrofit.create(FoldersService::class.java).apply {
             // Use authenticationGuard if needed
         }
     }

@@ -35,4 +35,12 @@ interface DueDiligenceProjectsService {
     @GET("due-diligence-projects/{projectId}")
     suspend fun getDueDiligenceProjectById(@Path("projectId") projectId: Long): Call<DueDiligenceProjectDto?>
 
+    @Headers(
+        value = [
+            "accept: application/json"
+        ]
+    )
+    @GET("due-diligence-projects/user/{username}")
+    suspend fun getDueDiligenceProjectByUserAndUsername(@Path("username") username: String): Call<List<DueDiligenceProjectDto>>
+
 }

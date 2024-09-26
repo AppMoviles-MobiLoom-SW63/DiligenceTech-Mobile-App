@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,8 +34,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,22 +49,30 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.substring
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.common.Constants
+import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDiligenceProjectsRepository
+import pe.edu.upc.diligencetech.duediligencemanagement.domain.DueDiligenceProject
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @Composable
 fun ProjectsListScreen(
+    viewModel: ProjectsListViewModel = hiltViewModel(),
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+
 ) {
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -68,7 +81,12 @@ fun ProjectsListScreen(
         onProfileClick = onProfileClick,
         onSettingsClick = onSettingsClick
     ) {
+
+        var isLoading by remember { mutableStateOf(true) }
+        var projects by remember { mutableStateOf(listOf<DueDiligenceProject>()) }
         var showDialog by remember { mutableStateOf(false) }
+
+        viewModel.loadProjects()
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -81,7 +99,9 @@ fun ProjectsListScreen(
                     text = buildAnnotatedString {
                         append("Bienvenido ")
                         withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
-                            append("Jorge Valdivia")
+                            Constants.username.let {
+                                append(Constants.username!!.substringBefore("@"))
+                            }
                         }
                     },
                     style = TextStyle(
@@ -114,25 +134,31 @@ fun ProjectsListScreen(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Column(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp)
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    for (i in 1..4) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-                        ) {
-                            ProjectCard(projectName = "Proyecto $i", projectType = "Buy-Side")
-                            ProjectCard(projectName = "Proyecto ${i + 1}", projectType = "Sell-Side")
+                if (projects.isEmpty()) {
+                    Text(
+                        text = "No se encontraron proyectos.",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontFamily = Montserrat,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        projects.forEach { project ->
+                            ProjectCard(
+                                projectName = project.projectName,
+                                projectType = project.projectName
+                            )
                         }
                     }
                 }
+            }
 
                 if (showDialog) {
                     ProjectInputDialog(
@@ -142,7 +168,7 @@ fun ProjectsListScreen(
                         }
                     )
                 }
-            }
+
 
             FloatingActionButton(
                 onClick = { showDialog = true },
@@ -258,7 +284,13 @@ fun ProjectInputDialog(
                     value = "Hola",
                     onValueChange = { },
                     label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese nombre", fontFamily = Montserrat, color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            "Ingrese nombre",
+                            fontFamily = Montserrat,
+                            color = Color.Gray
+                        )
+                    },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
@@ -270,15 +302,28 @@ fun ProjectInputDialog(
                         fontFamily = Montserrat
                     )
                 )
-                Spacer(modifier = Modifier
-                    .height(16.dp)
+                Spacer(
+                    modifier = Modifier
+                        .height(16.dp)
                 )
 
                 OutlinedTextField(
                     value = "",
                     onValueChange = { },
-                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese agentes de compra", fontFamily = Montserrat, color = Color.Gray) },
+                    label = {
+                        Text(
+                            "Agentes de Compra",
+                            fontFamily = Montserrat,
+                            color = Color.White
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            "Ingrese agentes de compra",
+                            fontFamily = Montserrat,
+                            color = Color.Gray
+                        )
+                    },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
@@ -295,8 +340,20 @@ fun ProjectInputDialog(
                 OutlinedTextField(
                     value = "",
                     onValueChange = { },
-                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese agentes de venta", fontFamily = Montserrat, color = Color.Gray) },
+                    label = {
+                        Text(
+                            "Agentes de Venta",
+                            fontFamily = Montserrat,
+                            color = Color.White
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            "Ingrese agentes de venta",
+                            fontFamily = Montserrat,
+                            color = Color.Gray
+                        )
+                    },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
