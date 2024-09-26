@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -73,8 +74,6 @@ fun AreasListScreen(
         myOption = "Proyectos"
     ) {
         val areas = viewModel.areas
-
-        // only at the beginning
         val areasObtained by remember {
             mutableStateOf(viewModel.getAreas(projectId))
         }
@@ -88,27 +87,40 @@ fun AreasListScreen(
                     .background(Color(0xFF1A1A1A)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Bienvenido ")
-                        withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
-                            Constants.username.let {
-                                if (it is String) {
-                                    append(it.substringBefore('@'))
-                                }
-                            }
-                        }
-                    },
-                    style = TextStyle(
-                        fontFamily = Montserrat,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        fontSize = 22.sp
-                    ),
+                Row(
                     modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
-                )
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(Color(0xFF282828), shape = CircleShape)
+                            .clickable { onBackClick() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.back_icon),
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Text(
+                        text = "Proyecto Messi",
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFD6773D),
+                            fontSize = 22.sp
+                        ),
+                        modifier = Modifier
+                            .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
+                    )
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -116,8 +128,15 @@ fun AreasListScreen(
                         .padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
                     horizontalArrangement = Arrangement.Start
                 ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.all_areas_icon), // Reemplaza con tu ícono
+                        contentDescription = "Ícono de áreas",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(start = 8.dp, bottom = 2.dp) // Espaciado opcional
+                    )
                     Text(
-                        text = "Áreas del proyecto: $projectId",
+                        text = "Todas las áreas",
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.SemiBold,
@@ -136,25 +155,11 @@ fun AreasListScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (i in areas.indices step 2) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-                        ) {
-                            // First card
-                            AreaCard(projectName = areas[i].name, projectType = "") {
-                                onEnteringAreaClick(areas[i].id)
-                            }
-
-                            // Second card, check if it exists
-                            if (i + 1 < areas.size) {
-                                AreaCard(projectName = areas[i + 1].name, projectType = "") {
-                                    onEnteringAreaClick(areas[i + 1].id)
-                                }
-                            }
+                    for (i in areas.indices) {
+                        AreaCard(projectName = areas[i].name, projectType = "") {
+                            onEnteringAreaClick(areas[i].id)
                         }
+                        Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                     }
                 }
 
@@ -195,10 +200,9 @@ fun AreaCard(
 ) {
     Card(
         modifier = Modifier
-            .width(180.dp)
-            .height(180.dp)
-            .clickable {  },
-        onClick = onClick,
+            .fillMaxWidth()
+            .height(90.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(30.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
         elevation = CardDefaults.cardElevation(5.dp)
@@ -207,48 +211,26 @@ fun AreaCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            horizontalAlignment = Alignment.Start, // Alineación a la izquierda
+            verticalArrangement = Arrangement.Center // Centrado vertical
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = "1.",
-                    color = Color.White,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Icon(
-                painter = painterResource(id = R.drawable.area_icon),
-                contentDescription = "Area",
-                tint = Color(0xFFD6773D),
-                modifier = Modifier.size(64.dp)
+            Text(
+                text = projectName,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold
             )
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = projectName,
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = projectType,
-                    color = Color(0xFFD6773D),
-                    fontFamily = Montserrat,
-                    fontSize = 12.sp
-                )
-            }
+            Text(
+                text = projectType,
+                color = Color(0xFFD6773D),
+                fontFamily = Montserrat,
+                fontSize = 14.sp
+            )
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

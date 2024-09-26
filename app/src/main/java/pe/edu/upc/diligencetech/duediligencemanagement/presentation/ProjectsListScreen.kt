@@ -147,18 +147,23 @@ fun ProjectsListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            // First card
-                            ProjectCard(projectName = projects[i].projectName, projectType = "") {
+                            ProjectCard(
+                                projectName = projects[i].projectName,
+                                projectType = ""
+                            ) {
                                 onEnteringProjectClick(projects[i].id)
                             }
-
-                            // Second card, check if it exists
                             if (i + 1 < projects.size) {
-                                ProjectCard(projectName = projects[i + 1].projectName, projectType = "") {
+                                ProjectCard(
+                                    projectName = projects[i + 1].projectName,
+                                    projectType = ""
+                                ) {
                                     onEnteringProjectClick(projects[i + 1].id)
                                 }
+                            } else {
+                                Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
