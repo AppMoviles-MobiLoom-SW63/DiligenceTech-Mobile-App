@@ -335,6 +335,8 @@ fun ProjectInputDialog(
                             )
                         )
                     }
+                    Spacer(modifier = Modifier.width(10.dp))
+
                     Button(
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(
