@@ -2,6 +2,7 @@ package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +17,8 @@ import javax.inject.Inject
 class AreasListViewModel @Inject constructor(
     private val repository: AreasRepository
 ): ViewModel() {
-    private var _areas = mutableListOf<Area>()
-    val areas: MutableList<Area> get() = _areas
+    private var _areas = SnapshotStateList<Area>()
+    val areas: SnapshotStateList<Area> get() = _areas
     private val _newArea = mutableStateOf("")
     val newArea: State<String> get() = _newArea
 

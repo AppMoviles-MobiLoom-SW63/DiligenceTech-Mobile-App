@@ -6,6 +6,7 @@ import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.Are
 import pe.edu.upc.diligencetech.iam.data.remote.SignUpDto
 import pe.edu.upc.diligencetech.iam.data.remote.SignUpResource
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -17,7 +18,8 @@ import retrofit2.http.Path
 interface AreasService {
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @PUT("areas/{areaId}")
@@ -25,15 +27,17 @@ interface AreasService {
 
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("areas")
-    suspend fun getAllAreas(): Call<List<AreaDto>>
+    suspend fun getAllAreas(): Response<List<AreaDto>>
 
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @POST("areas")
@@ -41,9 +45,10 @@ interface AreasService {
 
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("areas/{projectId}")
-    suspend fun getAreasByProjectId(@Path("projectId") projectId: Long): Call<List<AreaDto>>
+    suspend fun getAreasByProjectId(@Path("projectId") projectId: Long): Response<List<AreaDto>>
 }

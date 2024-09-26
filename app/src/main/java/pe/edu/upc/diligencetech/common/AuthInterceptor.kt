@@ -1,5 +1,6 @@
 package pe.edu.upc.diligencetech.common
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -13,8 +14,8 @@ class AuthInterceptor(private val tokenProvider: () -> String?) : Interceptor {
                     addHeader("Authorization", "Bearer $it")
                 }
             }
-            .method(original.method, original.body)
             .build()
+        Log.d("AuthInterceptor", "$requestWithAuth")
         return chain.proceed(requestWithAuth)
     }
 }

@@ -2,6 +2,7 @@ package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +17,8 @@ import javax.inject.Inject
 class FoldersListViewModel @Inject constructor(
     private val repository: FoldersRepository
 ): ViewModel() {
-    private var _folders = mutableListOf<Folder>()
-    val folders: MutableList<Folder> get() = _folders
+    private var _folders = SnapshotStateList<Folder>()
+    val folders: SnapshotStateList<Folder> get() = _folders
     private val _newFolder = mutableStateOf("")
     val newFolder: State<String> get() = _newFolder
 

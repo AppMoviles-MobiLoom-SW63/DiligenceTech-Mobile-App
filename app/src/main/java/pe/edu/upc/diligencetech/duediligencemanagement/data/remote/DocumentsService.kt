@@ -4,6 +4,7 @@ import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.DeleteFo
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.DocumentDto
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.DocumentResource
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -19,7 +20,7 @@ interface DocumentsService {
         ]
     )
     @PUT("Documents/{DocumentId}")
-    suspend fun getDocumentById(@Path("DocumentId") documentId: Long): Call<DocumentDto>
+    suspend fun getDocumentById(@Path("DocumentId") documentId: Long): Response<DocumentDto?>
 
     @Headers(
         value = [
@@ -35,7 +36,7 @@ interface DocumentsService {
         ]
     )
     @GET("Documents")
-    suspend fun getAllDocuments(): Call<List<DocumentDto>>
+    suspend fun getAllDocuments(): Response<List<DocumentDto>>
 
     @Headers(
         value = [
@@ -51,7 +52,7 @@ interface DocumentsService {
         ]
     )
     @GET("Documents/{folderId}")
-    suspend fun getDocumentsByFolderId(@Path("folderId") folderId: Long): Call<List<DocumentDto>>
+    suspend fun getDocumentsByFolderId(@Path("folderId") folderId: Long): Response<List<DocumentDto>>
 
 
 

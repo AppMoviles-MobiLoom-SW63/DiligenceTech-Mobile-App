@@ -14,7 +14,7 @@ class DocumentsRepository(
     suspend fun getDocumentsByFolderId(folderId: Long): Resource<List<Document>>
     = withContext(Dispatchers.IO) {
         try {
-            val response = documentsService.getDocumentsByFolderId(folderId).execute()
+            val response = documentsService.getDocumentsByFolderId(folderId)
             if (response.isSuccessful) {
                 val documentDtos = response.body()
                 val documents = documentDtos?.map {

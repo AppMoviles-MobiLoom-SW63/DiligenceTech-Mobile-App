@@ -31,7 +31,7 @@ class AreasRepository(
     suspend fun getAreasByProjectId(projectId: Long): Resource<List<Area>>
     = withContext(Dispatchers.IO) {
         try {
-            val response = areasService.getAreasByProjectId(projectId).execute()
+            val response = areasService.getAreasByProjectId(projectId)
             if (response.isSuccessful) {
                 Log.d("Area Success", "Yes")
                 val areasDto = response.body()

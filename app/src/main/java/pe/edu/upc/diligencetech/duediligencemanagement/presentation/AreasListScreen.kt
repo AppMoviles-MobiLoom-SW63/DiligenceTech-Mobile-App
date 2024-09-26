@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
@@ -89,7 +90,11 @@ fun AreasListScreen(
                     text = buildAnnotatedString {
                         append("Bienvenido ")
                         withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
-                            append("Jorge Valdivia")
+                            Constants.username.let {
+                                if (it is String) {
+                                    append(it.substringBefore('@'))
+                                }
+                            }
                         }
                     },
                     style = TextStyle(
@@ -110,7 +115,7 @@ fun AreasListScreen(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Todos los proyectos",
+                        text = "Áreas del proyecto: $projectId",
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.SemiBold,
