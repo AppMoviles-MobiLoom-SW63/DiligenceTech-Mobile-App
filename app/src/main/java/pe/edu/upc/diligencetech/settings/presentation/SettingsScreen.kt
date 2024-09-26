@@ -16,7 +16,8 @@ fun SettingsScreen(
     onProjectsClick = onProjectsClick,
     onMessagesClick = onMessagesClick,
     onProfileClick = onProfileClick,
-    onSettingsClick = onSettingsClick
+    onSettingsClick = onSettingsClick,
+    myOption = "Ajustes"
 ) {
     Text("Settings")
 }

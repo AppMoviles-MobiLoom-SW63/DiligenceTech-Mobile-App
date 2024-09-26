@@ -53,6 +53,8 @@ object DiligenceTechModule {
         return retrofit.create(AuthenticationService::class.java)
     }
 
+
+
     @Provides
     @Singleton
     fun provideAuthenticationRepository(authenticationService: AuthenticationService): AuthenticationRepository {

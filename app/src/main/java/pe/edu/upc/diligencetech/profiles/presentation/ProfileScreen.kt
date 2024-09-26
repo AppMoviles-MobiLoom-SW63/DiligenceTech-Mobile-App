@@ -16,7 +16,8 @@ fun ProfileScreen(
     onProjectsClick = onProjectsClick,
     onMessagesClick = onMessagesClick,
     onProfileClick = onProfileClick,
-    onSettingsClick = onSettingsClick
+    onSettingsClick = onSettingsClick,
+    myOption = "Perfil"
 ) {
     Text("Profile")
 }

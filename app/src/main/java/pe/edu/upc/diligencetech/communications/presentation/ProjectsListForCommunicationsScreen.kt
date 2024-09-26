@@ -48,7 +48,8 @@ fun ProjectsListForCommunicationsScreen(
         onProjectsClick = onProjectsClick,
         onMessagesClick = onMessagesClick,
         onProfileClick = onProfileClick,
-        onSettingsClick = onSettingsClick
+        onSettingsClick = onSettingsClick,
+        myOption = "Mensajes"
     ) {
         Column(
             modifier = Modifier

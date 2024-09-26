@@ -2,11 +2,15 @@ package pe.edu.upc.diligencetech.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import pe.edu.upc.diligencetech.communications.presentation.ProjectsListForCommunicationsScreen
 import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.presentation.AreasListScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.presentation.FoldersListScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_up.SignUpScreen
@@ -103,6 +107,42 @@ fun Home() {
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") }
             )
+        }
+        composable(
+            route = "areas/{projectId}",
+            arguments = listOf(navArgument("projectId") {
+                type = NavType.LongType
+            })
+        ) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getLong("projectId") ?: return@composable
+
+            guard()
+            AreasListScreen(
+                projectId = projectId,
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            ) { }
+        }
+        composable(
+            route = "folders/{areaId}",
+            arguments = listOf(navArgument("areaId") {
+                type = NavType.LongType
+            })
+        ) { backStackEntry ->
+            val areaId = backStackEntry.arguments?.getLong("areaId") ?: return@composable
+
+            guard()
+            FoldersListScreen (
+                areaId = areaId,
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            ) { }
         }
     }
 }

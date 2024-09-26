@@ -52,10 +52,9 @@ fun WorkbenchScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    content: @Composable () -> Unit,
+    myOption: String = "Inicio",
+    content: @Composable () -> Unit
 ) {
-    val selectedOption = remember { mutableStateOf("Inicio") }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -97,25 +96,20 @@ fun WorkbenchScreen(
         },
         bottomBar = {
             BottomBar(
-                selectedOption = selectedOption.value,
+                selectedOption = myOption,
                 onHomeClick = {
-                    selectedOption.value = "Inicio"
                     onHomeClick()
                 },
                 onProjectsClick = {
-                    selectedOption.value = "Proyectos"
                     onProjectsClick()
                 },
                 onMessagesClick = {
-                    selectedOption.value = "Mensajes"
                     onMessagesClick()
                 },
                 onProfileClick = {
-                    selectedOption.value = "Perfil"
                     onProfileClick()
                 },
                 onSettingsClick = {
-                    selectedOption.value = "Ajustes"
                     onSettingsClick()
                 },
             )
