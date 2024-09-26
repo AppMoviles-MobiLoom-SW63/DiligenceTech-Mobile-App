@@ -14,7 +14,7 @@ class FoldersRepository(
     suspend fun getFoldersByAreaId(areaId: Long): Resource<List<Folder>>
     = withContext(Dispatchers.IO) {
         try {
-            val response = foldersService.getFoldersByAreaId(areaId).execute()
+            val response = foldersService.getFoldersByAreaId(areaId)
             if (response.isSuccessful) {
                 val folderDtos = response.body()
                 val folders = folderDtos?.map {

@@ -61,14 +61,16 @@ fun AreasListScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onBackClick: () -> Unit
+    onEnteringAreaClick: (areaId: Long) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     WorkbenchScreen(
         onHomeClick = onHomeClick,
         onProjectsClick = onProjectsClick,
         onMessagesClick = onMessagesClick,
         onProfileClick = onProfileClick,
-        onSettingsClick = onSettingsClick
+        onSettingsClick = onSettingsClick,
+        myOption = "Proyectos"
     ) {
         val areas = viewModel.areas
 
@@ -142,11 +144,15 @@ fun AreasListScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
                         ) {
                             // First card
-                            AreaCard(projectName = areas[i].name, projectType = "")
+                            AreaCard(projectName = areas[i].name, projectType = "") {
+                                onEnteringAreaClick(areas[i].id)
+                            }
 
                             // Second card, check if it exists
                             if (i + 1 < areas.size) {
-                                AreaCard(projectName = areas[i + 1].name, projectType = "")
+                                AreaCard(projectName = areas[i + 1].name, projectType = "") {
+                                    onEnteringAreaClick(areas[i + 1].id)
+                                }
                             }
                         }
                     }
@@ -156,8 +162,8 @@ fun AreasListScreen(
                     AreaInputDialog(
                         onDismiss = { showDialog = false },
                         onAddProject = {
-                            showDialog = false
                             viewModel.addArea(projectId)
+                            showDialog = false
                         }
                     )
                 }
@@ -182,12 +188,17 @@ fun AreasListScreen(
 }
 
 @Composable
-fun AreaCard(projectName: String, projectType: String) {
+fun AreaCard(
+    projectName: String,
+    projectType: String,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .width(180.dp)
             .height(180.dp)
             .clickable {  },
+        onClick = onClick,
         shape = RoundedCornerShape(30.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
         elevation = CardDefaults.cardElevation(5.dp)

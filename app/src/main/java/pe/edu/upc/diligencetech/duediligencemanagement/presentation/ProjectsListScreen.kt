@@ -71,7 +71,8 @@ fun ProjectsListScreen(
         onProjectsClick = onProjectsClick,
         onMessagesClick = onMessagesClick,
         onProfileClick = onProfileClick,
-        onSettingsClick = onSettingsClick
+        onSettingsClick = onSettingsClick,
+        myOption = "Proyectos"
     ) {
         val projects = viewModel.projects
         val newProject = viewModel.newProject

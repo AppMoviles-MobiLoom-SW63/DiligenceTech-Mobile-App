@@ -10,4 +10,4 @@ data class AreaDto(
     val fileName: String,
 )
 
-fun AreaDto.toArea() = Area(fileName)
+fun AreaDto.toArea() = Area(id, fileName)

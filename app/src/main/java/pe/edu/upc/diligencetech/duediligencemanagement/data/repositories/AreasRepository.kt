@@ -15,6 +15,7 @@ class AreasRepository(
     suspend fun createArea(areaResource: AreaResource): Resource<List<Area>> =
         withContext(Dispatchers.IO) {
             try {
+                Log.d("Paso Area", "Yes")
                 val response = areasService.createArea(areaResource).execute()
                 if (response.isSuccessful) {
                     Log.d("Area Success", "Yes")
@@ -24,6 +25,7 @@ class AreasRepository(
                 Log.d("Area Failure", "No")
                 return@withContext Resource.Error("Something went wrong.")
             } catch (e: Exception) {
+                Log.d("Fallo totalmente en Area", "NO")
                 return@withContext Resource.Error("Something went wrong: ${e.message}")
             }
         }

@@ -4,6 +4,7 @@ import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.FolderDt
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditFolderResource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.FolderResource
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -15,7 +16,8 @@ import retrofit2.http.Path
 interface FoldersService {
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @PUT("folders/{folderId}")
@@ -23,15 +25,17 @@ interface FoldersService {
 
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("folders")
-    suspend fun getAllFolders(): Call<List<FolderDto>>
+    suspend fun getAllFolders(): Response<List<FolderDto>>
 
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @POST("folders")
@@ -39,10 +43,11 @@ interface FoldersService {
 
     @Headers(
         value = [
-            "accept: application/json"
+            "accept: application/json",
+            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("folders/{areaId}")
-    suspend fun getFoldersByAreaId(@Path("areaId") areaId: Long): Call<List<FolderDto>>
+    suspend fun getFoldersByAreaId(@Path("areaId") areaId: Long): Response<List<FolderDto>>
 
 }

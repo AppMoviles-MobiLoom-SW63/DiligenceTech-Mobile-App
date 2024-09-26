@@ -126,7 +126,10 @@ fun Home() {
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
-                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                onEnteringAreaClick = { areaId ->
+                    navController.navigate("folders/$areaId")
+                }
             ) { }
         }
         composable(

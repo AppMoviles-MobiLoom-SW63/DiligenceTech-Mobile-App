@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
@@ -66,7 +67,8 @@ fun FoldersListScreen(
         onProjectsClick = onProjectsClick,
         onMessagesClick = onMessagesClick,
         onProfileClick = onProfileClick,
-        onSettingsClick = onSettingsClick
+        onSettingsClick = onSettingsClick,
+        myOption = "Proyectos"
     ) {
         val folders = viewModel.folders
 
@@ -88,7 +90,11 @@ fun FoldersListScreen(
                     text = buildAnnotatedString {
                         append("Bienvenido ")
                         withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
-                            append("Jorge Valdivia")
+                            Constants.username.let {
+                                if (it is String) {
+                                    append(it.substringBefore('@'))
+                                }
+                            }
                         }
                     },
                     style = TextStyle(
@@ -109,7 +115,7 @@ fun FoldersListScreen(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Todos los proyectos",
+                        text = "Fólderes del área: $areaId",
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.SemiBold,
@@ -136,11 +142,11 @@ fun FoldersListScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
                         ) {
                             // First card
-                            AreaCard(projectName = folders[i].name, projectType = "")
+                            FolderCard(projectName = folders[i].name, projectType = "")
 
                             // Second card, check if it exists
                             if (i + 1 < folders.size) {
-                                AreaCard(projectName = folders[i + 1].name, projectType = "")
+                                FolderCard(projectName = folders[i + 1].name, projectType = "")
                             }
                         }
                     }
