@@ -19,12 +19,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,114 +59,97 @@ fun ProjectsListScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-) = WorkbenchScreen(
-    onHomeClick = onHomeClick,
-    onProjectsClick = onProjectsClick,
-    onMessagesClick = onMessagesClick,
-    onProfileClick = onProfileClick,
-    onSettingsClick = onSettingsClick
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF1A1A1A)),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Text(
-            text = buildAnnotatedString {
-                append("Bienvenido ")
-                withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
-                    append("Jorge Valdivia")
-                }
-            },
-            style = TextStyle(
-                fontFamily = Montserrat,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                fontSize = 22.sp
-            ),
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF282828))
-                .padding(top= 16.dp, bottom = 16.dp, start= 8.dp),
-            horizontalArrangement = Arrangement.Start
-        ){
-            Text(
-                text = "Todos los proyectos",
-                style = TextStyle(
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
-                    fontSize = 16.sp,
-                ),
-                modifier = Modifier.padding(start = 8.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+    WorkbenchScreen(
+        onHomeClick = onHomeClick,
+        onProjectsClick = onProjectsClick,
+        onMessagesClick = onMessagesClick,
+        onProfileClick = onProfileClick,
+        onSettingsClick = onSettingsClick
+    ) {
+        var showDialog by remember { mutableStateOf(false) }
 
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()), // Hacer la columna desplazable
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                    .fillMaxSize()
+                    .background(Color(0xFF1A1A1A)),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProjectCard(projectName = "Proyecto Messi", projectType = "Buy-Side")
-                ProjectCard(projectName = "Proyecto Vinicius", projectType = "Sell-Side")
+                Text(
+                    text = buildAnnotatedString {
+                        append("Bienvenido ")
+                        withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
+                            append("Jorge Valdivia")
+                        }
+                    },
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 22.sp
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF282828))
+                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Todos los proyectos",
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White,
+                            fontSize = 16.sp,
+                        ),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Row for displaying project cards
+                    for (i in 1..4) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                        ) {
+                            ProjectCard(projectName = "Proyecto $i", projectType = "Buy-Side")
+                            ProjectCard(projectName = "Proyecto ${i + 1}", projectType = "Sell-Side")
+                        }
+                    }
+                }
+
+                if (showDialog) {
+                    ProjectInputDialog(
+                        onDismiss = { showDialog = false },
+                        onAddProject = {
+                            showDialog = false
+                        }
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp)) // Espaciador entre filas
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-            ) {
-                ProjectCard(projectName = "Proyecto Ronaldo", projectType = "Buy-Side")
-                ProjectCard(projectName = "Proyecto Neymar", projectType = "Sell-Side")
-            }
-            Spacer(modifier = Modifier.height(8.dp)) // Espaciador entre filas
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-            ) {
-                ProjectCard(projectName = "Proyecto Ronaldo", projectType = "Buy-Side")
-                ProjectCard(projectName = "Proyecto Neymar", projectType = "Sell-Side")
-            }
-            Spacer(modifier = Modifier.height(8.dp)) // Espaciador entre filas
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-            ) {
-                ProjectCard(projectName = "Proyecto Ronaldo", projectType = "Buy-Side")
-                ProjectCard(projectName = "Proyecto Neymar", projectType = "Sell-Side")
-            }
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.BottomEnd
-        ) {
+
             FloatingActionButton(
-                onClick = { },
+                onClick = { showDialog = true },
                 containerColor = Color.White,
                 modifier = Modifier
-                    .padding(bottom = 40.dp, end = 16.dp)
-                    .size(64.dp)
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -167,6 +161,7 @@ fun ProjectsListScreen(
         }
     }
 }
+
 
 @Composable
 fun ProjectCard(projectName: String, projectType: String) {
@@ -228,3 +223,123 @@ fun ProjectCard(projectName: String, projectType: String) {
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProjectInputDialog(
+    onDismiss: () -> Unit,
+    onAddProject: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Crear nuevo Proyecto",
+                style = TextStyle(
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+            )
+        },
+        text = {
+            Column {
+                // Línea de separación
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color(0xFF626262)) // Color de la línea
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Campos de entrada
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text("Nombre", fontFamily = Montserrat, color = Color(0xFFD6773D)) },
+                    placeholder = { Text("Ingrese nombre", fontFamily = Montserrat, color = Color.Gray) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = Color(0xFFD6773D),
+                        unfocusedLabelColor = Color(0xFFD6773D),
+                        cursorColor = Color(0xFFD6773D),
+
+                    ),
+                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                    textStyle = TextStyle(
+                        color = Color.White, // Color del texto ingresado
+                        fontFamily = Montserrat // Fuente del texto
+                    )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color(0xFFD6773D)) },
+                    placeholder = { Text("Ingrese agentes de compra", fontFamily = Montserrat, color = Color.Gray) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = Color(0xFFD6773D),
+                        unfocusedLabelColor = Color(0xFFD6773D),
+                        cursorColor = Color(0xFFD6773D),
+
+                    ),
+                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                    textStyle = TextStyle(
+                        color = Color.White, // Color del texto ingresado
+                        fontFamily = Montserrat // Fuente del texto
+                    )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color(0xFFD6773D)) },
+                    placeholder = { Text("Ingrese agentes de venta", fontFamily = Montserrat, color = Color.Gray) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = Color(0xFFD6773D),
+                        unfocusedLabelColor = Color(0xFFD6773D),
+                        cursorColor = Color(0xFFD6773D),
+                    ),
+                    shape = RoundedCornerShape(8.dp), // Bordes redondeados
+                    textStyle = TextStyle(
+                        color = Color.White, // Color del texto ingresado
+                        fontFamily = Montserrat // Fuente del texto
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onAddProject()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFFD6773D)
+                ),
+                modifier = Modifier.padding(end = 8.dp) // Espacio a la derecha
+            ) {
+                Text("Crear")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFFD6773D)
+                ),
+                modifier = Modifier.padding(start = 8.dp) // Espacio a la izquierda
+            ) {
+                Text("Cancelar")
+            }
+        },
+        modifier = Modifier
+            .background(Color(0xFF282828)) // Fondo del diálogo
+    )
+}
+
