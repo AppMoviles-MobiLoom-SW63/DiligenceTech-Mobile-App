@@ -48,4 +48,5 @@ interface DueDiligenceProjectsService {
     @GET("due-diligence-projects/user/{username}")
     suspend fun getDueDiligenceProjectsByUsername(@Path("username") username: String): Response<List<DueDiligenceProjectDto>>
 
+
 }

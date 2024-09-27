@@ -74,4 +74,20 @@ class DueDiligenceProjectsRepository(
             return@withContext Resource.Error("Something went wrong: ${e.message}")
         }
     }
+    suspend fun getProjectById(projectId: Long): Resource<DueDiligenceProject>
+            = withContext(Dispatchers.IO) {
+        try {
+            val response = service.getDueDiligenceProjectById(projectId)  // Asegúrate de que el servicio tenga esta función
+            if (response.isSuccessful) {
+                val projectDto = response.body()
+                projectDto?.let {
+                    val project = it.toProject()
+                    return@withContext Resource.Success(project)
+                }
+            }
+            return@withContext Resource.Error("Project not found")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Something went wrong: ${e.message}")
+        }
+    }
 }

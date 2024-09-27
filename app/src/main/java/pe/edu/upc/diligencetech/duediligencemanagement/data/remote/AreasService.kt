@@ -23,7 +23,7 @@ interface AreasService {
         ]
     )
     @PUT("areas/{areaId}")
-    suspend fun editArea(@Path("areaId") areaId: String, @Body editAreaResource: AreaResource): Call<AreaDto?>
+    suspend fun editArea(@Path("areaId") areaId: String, @Body editAreaResource: AreaResource): Response<AreaDto?>
 
     @Headers(
         value = [

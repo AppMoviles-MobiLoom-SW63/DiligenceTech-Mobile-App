@@ -51,4 +51,16 @@ class AreasRepository(
             return@withContext Resource.Error("Something went wrong: ${e.message}")
         }
     }
+    suspend fun editArea(areaId: String, areaResource: AreaResource): Resource<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val response = areasService.editArea(areaId, areaResource)
+            if (response.isSuccessful) {
+                return@withContext Resource.Success(Unit) // Edición exitosa
+            }
+            return@withContext Resource.Error("Error al editar el área.")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Error: ${e.message}")
+        }
+    }
+
 }

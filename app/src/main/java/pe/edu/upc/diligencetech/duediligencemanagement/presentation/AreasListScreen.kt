@@ -1,12 +1,14 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,15 +21,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,21 +46,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
-import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
-import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInViewModel
+import pe.edu.upc.diligencetech.duediligencemanagement.domain.Area
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AreasListScreen(
     viewModel: AreasListViewModel = hiltViewModel(),
@@ -74,11 +79,12 @@ fun AreasListScreen(
         myOption = "Proyectos"
     ) {
         val areas = viewModel.areas
-        val areasObtained by remember {
-            mutableStateOf(viewModel.getAreas(projectId))
-        }
-
+        var searchQuery by remember { mutableStateOf("") } // Variable para el buscador
+        var areaToEdit by remember { mutableStateOf<Area?>(null) }
         var showDialog by remember { mutableStateOf(false) }
+        val totalStorage = 36
+        val usedStorage = 10
+        val areasCreated by remember { mutableStateOf(viewModel.getAreas(projectId)) }
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -90,7 +96,8 @@ fun AreasListScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
+                        .padding(top = 16.dp, bottom = 30.dp, start = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically, // Esto asegura que el contenido esté alineado verticalmente
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Box(
@@ -108,16 +115,18 @@ fun AreasListScreen(
                         )
                     }
 
+                    Spacer(modifier = Modifier.width(16.dp))
+
                     Text(
-                        text = "Proyecto Messi",
+                        text = viewModel.selectedProjectName.value,
                         style = TextStyle(
                             fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             color = Color(0xFFD6773D),
                             fontSize = 22.sp
                         ),
                         modifier = Modifier
-                            .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
+                            .padding(vertical = 16.dp)
                     )
                 }
 
@@ -125,28 +134,122 @@ fun AreasListScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color(0xFF282828))
-                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
-                    horizontalArrangement = Arrangement.Start
+                        .padding(top = 16.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.all_areas_icon), // Reemplaza con tu ícono
-                        contentDescription = "Ícono de áreas",
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Buscar",
+                                    tint = Color(0xFF868686)
+                                )
+                                Spacer(modifier = Modifier.width(1.dp))
+                                Text("Buscar por área", fontFamily = Montserrat, color = Color(0xFF626262), fontSize = 14.sp)
+                            }
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = Color.Transparent,
+                            unfocusedLabelColor = Color.Transparent,
+                            cursorColor = Color(0xFF626262),
+
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        textStyle = TextStyle(fontFamily = Montserrat, color = Color(0xFF626262), fontSize = 14.sp), // Estilo del texto ingresado
                         modifier = Modifier
-                            .size(24.dp)
-                            .padding(start = 8.dp, bottom = 2.dp) // Espaciado opcional
+                            .fillMaxWidth(0.94f)
+                            .height(55.dp)
+                            .background(Color.White, shape = RoundedCornerShape(8.dp))
+                            .border(1.dp, Color(0xFF626262), RoundedCornerShape(8.dp))
                     )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                ) {
+                    // Título
                     Text(
-                        text = "Todas las áreas",
+                        text = "Almacenamiento",
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
                             fontSize = 16.sp,
                         ),
+                        modifier = Modifier.padding(bottom = 20.dp, top = 10.dp)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                            .background(Color.White, shape = RoundedCornerShape(2.dp))
+                    ) {
+                        val usedPercentage = if (totalStorage > 0) usedStorage.toFloat() / totalStorage else 0f
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(usedPercentage)
+                                .background(Color(0xFFD6773D), shape = RoundedCornerShape(0.dp))
+                        )
+                    }
+                    Text(
+                        text = "$usedStorage GB de $totalStorage GB",
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            color = Color.White,
+                            fontSize = 14.sp,
+                        ),
+                        modifier = Modifier.padding(top = 15.dp, bottom = 2.dp)
+                    )
+                }
+                Divider(
+                    color = Color(0xFF626262), // Color de la línea
+                    thickness = 1.dp, // Grosor de la línea
+                    modifier = Modifier
+                        .fillMaxWidth(0.999f) // Ocupa el 90% del ancho
+                        .padding(horizontal = 16.dp) // Espaciado horizontal para alinearlo con otros elementos
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.all_areas_icon),
+                        contentDescription = "Ícono de áreas",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(start = 8.dp, bottom = 2.dp) // Espaciado opcional
+                    )
+                    Text(
+                        text = "Todas las áreas",
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            fontSize = 16.sp,
+                        ),
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Divider(
+                    color = Color(0xFF626262), // Color de la línea
+                    thickness = 1.dp, // Grosor de la línea
+                    modifier = Modifier
+                        .fillMaxWidth(0.999f) // Ocupa el 90% del ancho
+                        .padding(horizontal = 16.dp) // Espaciado horizontal para alinearlo con otros elementos
+                )
+
+                Spacer(modifier = Modifier.height(25.dp))
 
                 Column(
                     modifier = Modifier
@@ -156,10 +259,12 @@ fun AreasListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     for (i in areas.indices) {
-                        AreaCard(projectName = areas[i].name, projectType = "") {
-                            onEnteringAreaClick(areas[i].id)
+                        if (searchQuery.isEmpty() || areas[i].name.contains(searchQuery, ignoreCase = true)) {
+                            AreaCard(projectName = areas[i].name) {
+                                onEnteringAreaClick(areas[i].id)
+                            }
+                            Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
-                        Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                     }
                 }
 
@@ -195,41 +300,58 @@ fun AreasListScreen(
 @Composable
 fun AreaCard(
     projectName: String,
-    projectType: String,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(90.dp)
+            .height(55.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(30.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.Start, // Alineación a la izquierda
-            verticalArrangement = Arrangement.Center // Centrado vertical
+            verticalAlignment = Alignment.CenterVertically, // Centra el contenido verticalmente en la fila
+            horizontalArrangement = Arrangement.SpaceBetween // Coloca elementos espaciados
         ) {
-            Text(
-                text = projectName,
-                color = Color.White,
-                fontSize = 16.sp,
-                fontFamily = Montserrat,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = projectType,
-                color = Color(0xFFD6773D),
-                fontFamily = Montserrat,
-                fontSize = 14.sp
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start// Para que los elementos internos estén alineados
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.areas_icon), // Reemplaza con tu ícono
+                    contentDescription = "Ícono de áreas",
+                    tint = Color(0xFFD6773D),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(start = 8.dp, end = 8.dp) // Agrega un espaciado entre el ícono y el checkbox/texto
+                )
+
+                Text(
+                    text = projectName,
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Icon(
+                painter = painterResource(id = R.drawable.edit_icon), // Reemplaza con tu ícono de lápiz
+                contentDescription = "Editar",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable { }
             )
         }
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -333,6 +455,58 @@ fun AreaInputDialog(
                                 fontSize = 16.sp
                             )
                         )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EditAreaDialog(
+    currentAreaName: String,
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    var areaName by remember { mutableStateOf(currentAreaName) }
+
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Box(
+            modifier = Modifier
+                .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
+                .padding(25.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text("Editar Área")
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = areaName,
+                    onValueChange = { areaName = it },
+                    label = { Text("Nombre del Área") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(onClick = {
+                        onSave(areaName)
+                        onDismiss()
+                    }) {
+                        Text("Guardar")
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(onClick = onDismiss) {
+                        Text("Cancelar")
                     }
                 }
             }
