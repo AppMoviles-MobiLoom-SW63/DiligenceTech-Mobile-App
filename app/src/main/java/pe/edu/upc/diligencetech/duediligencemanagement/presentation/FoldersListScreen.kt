@@ -1,12 +1,14 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,14 +16,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,6 +56,7 @@ import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoldersListScreen(
     viewModel: FoldersListViewModel = hiltViewModel(),
@@ -71,13 +77,15 @@ fun FoldersListScreen(
         myOption = "Proyectos"
     ) {
         val folders = viewModel.folders
-
-        // only at the beginning
+        val projectName by viewModel.selectedProjectName
         val foldersObtained by remember {
-            mutableStateOf(viewModel.getFolders(areaId))
+            mutableStateOf(viewModel.getFolders(areaId, projectName))
         }
 
+        var searchQuery by remember { mutableStateOf("") } // Variable para el buscador
         var showDialog by remember { mutableStateOf(false) }
+        val totalStorage = 36
+        val usedStorage = 10
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -86,46 +94,162 @@ fun FoldersListScreen(
                     .background(Color(0xFF1A1A1A)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Bienvenido ")
-                        withStyle(style = SpanStyle(color = Color(0xFFD6773D))) {
-                            Constants.username.let {
-                                if (it is String) {
-                                    append(it.substringBefore('@'))
-                                }
-                            }
-                        }
-                    },
-                    style = TextStyle(
-                        fontFamily = Montserrat,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        fontSize = 22.sp
-                    ),
+                Row(
                     modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
-                )
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 30.dp, start = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically, // Esto asegura que el contenido esté alineado verticalmente
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(Color(0xFF282828), shape = CircleShape)
+                            .clickable { onBackClick() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.back_icon),
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Text(
+                        text = projectName,
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFD6773D),
+                            fontSize = 22.sp
+                        ),
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color(0xFF282828))
-                        .padding(top = 16.dp, bottom = 16.dp, start = 8.dp),
-                    horizontalArrangement = Arrangement.Start
+                        .padding(top = 16.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholder = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Buscar",
+                                    tint = Color(0xFF868686)
+                                )
+                                Spacer(modifier = Modifier.width(1.dp))
+                                Text("Buscar por área", fontFamily = Montserrat, color = Color(0xFF626262), fontSize = 14.sp)
+                            }
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = Color.Transparent,
+                            unfocusedLabelColor = Color.Transparent,
+                            cursorColor = Color(0xFF626262),
+
+                            ),
+                        shape = RoundedCornerShape(8.dp),
+                        textStyle = TextStyle(fontFamily = Montserrat, color = Color(0xFF626262), fontSize = 14.sp), // Estilo del texto ingresado
+                        modifier = Modifier
+                            .fillMaxWidth(0.94f)
+                            .height(55.dp)
+                            .background(Color.White, shape = RoundedCornerShape(8.dp))
+                            .border(1.dp, Color(0xFF626262), RoundedCornerShape(8.dp))
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                ) {
+                    // Título
                     Text(
-                        text = "Fólderes del área: $areaId",
+                        text = "Almacenamiento",
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
                             fontSize = 16.sp,
                         ),
+                        modifier = Modifier.padding(bottom = 20.dp, top = 10.dp)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(35.dp)
+                            .background(Color.White, shape = RoundedCornerShape(2.dp))
+                    ) {
+                        val usedPercentage = if (totalStorage > 0) usedStorage.toFloat() / totalStorage else 0f
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(usedPercentage)
+                                .background(Color(0xFFD6773D), shape = RoundedCornerShape(0.dp))
+                        )
+                    }
+                    Text(
+                        text = "$usedStorage GB de $totalStorage GB",
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            color = Color.White,
+                            fontSize = 14.sp,
+                        ),
+                        modifier = Modifier.padding(top = 15.dp, bottom = 2.dp)
+                    )
+                }
+                Divider(
+                    color = Color(0xFF626262),
+                    thickness = 1.dp,
+                    modifier = Modifier
+                        .fillMaxWidth(0.999f)
+                        .padding(horizontal = 16.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.areas_icon),
+                        contentDescription = "Ícono de folders",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .padding(start = 8.dp, bottom = 2.dp) // Espaciado opcional
+                    )
+                    Text(
+                        text = "Legal",
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            fontSize = 16.sp,
+                        ),
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Divider(
+                    color = Color(0xFF626262), // Color de la línea
+                    thickness = 1.dp, // Grosor de la línea
+                    modifier = Modifier
+                        .fillMaxWidth(0.999f) // Ocupa el 90% del ancho
+                        .padding(horizontal = 16.dp) // Espaciado horizontal para alinearlo con otros elementos
+                )
+
+                Spacer(modifier = Modifier.height(25.dp))
 
                 Column(
                     modifier = Modifier
@@ -134,20 +258,10 @@ fun FoldersListScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (i in folders.indices step 2) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-                        ) {
-                            // First card
-                            FolderCard(projectName = folders[i].name, projectType = "")
-
-                            // Second card, check if it exists
-                            if (i + 1 < folders.size) {
-                                FolderCard(projectName = folders[i + 1].name, projectType = "")
-                            }
+                    for (i in folders.indices) {
+                        if (searchQuery.isEmpty() || folders[i].name.contains(searchQuery, ignoreCase = true)) {
+                            FolderCard(projectName = folders[i].name)
+                            Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
                     }
                 }
@@ -182,59 +296,55 @@ fun FoldersListScreen(
 }
 
 @Composable
-fun FolderCard(projectName: String, projectType: String) {
+fun FolderCard(
+    projectName: String,
+) {
     Card(
         modifier = Modifier
-            .width(180.dp)
-            .height(180.dp)
+            .fillMaxWidth()
+            .height(55.dp)
             .clickable {  },
-        shape = RoundedCornerShape(30.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically, // Centra el contenido verticalmente en la fila
+            horizontalArrangement = Arrangement.SpaceBetween // Coloca elementos espaciados
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start// Para que los elementos internos estén alineados
             ) {
-                Text(
-                    text = "1.",
-                    color = Color.White,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold
+                Icon(
+                    painter = painterResource(id = R.drawable.folders_icon), // Reemplaza con tu ícono
+                    contentDescription = "Ícono de folders",
+                    tint = Color(0xFFFFD0B3),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(start = 8.dp, end = 8.dp) // Agrega un espaciado entre el ícono y el checkbox/texto
                 )
-            }
 
-            Icon(
-                painter = painterResource(id = R.drawable.folder_icon),
-                contentDescription = "Area",
-                tint = Color(0xFFD6773D),
-                modifier = Modifier.size(64.dp)
-            )
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
                 Text(
                     text = projectName,
                     color = Color.White,
                     fontSize = 14.sp,
                     fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = projectType,
-                    color = Color(0xFFD6773D),
-                    fontFamily = Montserrat,
-                    fontSize = 12.sp
+                    fontWeight = FontWeight.SemiBold
                 )
             }
+
+            Icon(
+                painter = painterResource(id = R.drawable.edit_icon), // Reemplaza con tu ícono de lápiz
+                contentDescription = "Editar",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable { }
+            )
         }
     }
 }
@@ -256,7 +366,7 @@ fun FolderInputDialog(
         ) {
             Column {
                 Text(
-                    text = "Crear nueva área",
+                    text = "Crear nuevo Folder",
                     style = TextStyle(
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,

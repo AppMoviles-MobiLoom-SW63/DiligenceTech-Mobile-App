@@ -209,11 +209,11 @@ fun AreasListScreen(
                     )
                 }
                 Divider(
-                    color = Color(0xFF626262), // Color de la línea
-                    thickness = 1.dp, // Grosor de la línea
+                    color = Color(0xFF626262),
+                    thickness = 1.dp,
                     modifier = Modifier
-                        .fillMaxWidth(0.999f) // Ocupa el 90% del ancho
-                        .padding(horizontal = 16.dp) // Espaciado horizontal para alinearlo con otros elementos
+                        .fillMaxWidth(0.999f)
+                        .padding(horizontal = 16.dp)
                 )
                 Row(
                     modifier = Modifier

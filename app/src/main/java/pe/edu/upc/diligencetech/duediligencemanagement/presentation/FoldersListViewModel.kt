@@ -16,23 +16,31 @@ import javax.inject.Inject
 @HiltViewModel
 class FoldersListViewModel @Inject constructor(
     private val repository: FoldersRepository
-): ViewModel() {
+) : ViewModel() {
+
     private var _folders = SnapshotStateList<Folder>()
     val folders: SnapshotStateList<Folder> get() = _folders
+
     private val _newFolder = mutableStateOf("")
     val newFolder: State<String> get() = _newFolder
 
-    fun getFolders(areaId: Long): Boolean {
+    private val _selectedProjectName = mutableStateOf("")
+    val selectedProjectName: State<String> get() = _selectedProjectName
+
+    // Modificación: recibir projectName directamente como parámetro
+    fun getFolders(areaId: Long, projectName: String): Boolean {
         viewModelScope.launch {
+            // Usamos el projectName directamente
+            _selectedProjectName.value = projectName
+
             val resource = repository.getFoldersByAreaId(areaId)
             if (resource is Resource.Success) {
                 _folders.clear()
-                resource.data.let {
-                    _folders.addAll(it!!.toMutableList())
+                resource.data?.let {
+                    _folders.addAll(it.toMutableList())
                 }
                 return@launch
-            }
-            else {
+            } else {
                 return@launch
             }
         }
@@ -49,13 +57,12 @@ class FoldersListViewModel @Inject constructor(
             val resource = repository.createFolder(folderResource)
             if (resource is Resource.Success) {
                 _folders.clear()
-                resource.data.let {
-                    _folders.addAll(it!!.toMutableList())
+                resource.data?.let {
+                    _folders.addAll(it.toMutableList())
                 }
                 _newFolder.value = ""
                 return@launch
-            }
-            else {
+            } else {
                 return@launch
             }
         }
