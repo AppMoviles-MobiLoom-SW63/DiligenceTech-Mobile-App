@@ -112,7 +112,7 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), onSignInTask: () 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(bottom = 50.dp)
+                        modifier = Modifier.padding(bottom = 20.dp)
                     ) {
                         Text(
                             text = "¿Ya tienes una cuenta?",
