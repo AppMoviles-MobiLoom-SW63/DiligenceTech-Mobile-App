@@ -430,6 +430,9 @@ fun DashboardScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
         }
     }
 }
