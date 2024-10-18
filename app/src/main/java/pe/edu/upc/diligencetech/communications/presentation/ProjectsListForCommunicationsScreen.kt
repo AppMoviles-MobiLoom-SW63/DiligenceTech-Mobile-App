@@ -108,39 +108,30 @@ fun ProjectsListForCommunicationsScreen(
             ) {
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
                 ProjectCard(
                     projectName = "Proyecto Ronaldo",
-                    projectType = ""
                 ) {}
             }
 
@@ -152,7 +143,6 @@ fun ProjectsListForCommunicationsScreen(
 @Composable
 fun ProjectCard(
     projectName: String,
-    projectType: String,
     onClick: () -> Unit
 ) {
     Card(
@@ -181,7 +171,7 @@ fun ProjectCard(
             )
             Spacer(modifier = Modifier.padding(6.dp))
             Text(
-                text = "Proyecto Ronaldo",
+                text = projectName,
                 color = Color.White,
                 fontFamily = Montserrat,
                 fontWeight = FontWeight.Bold

@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import pe.edu.upc.diligencetech.communications.presentation.MessageDetailsScreen
+import pe.edu.upc.diligencetech.communications.presentation.MessagesListFromProjectScreen
 import pe.edu.upc.diligencetech.communications.presentation.ProjectsListForCommunicationsScreen
 import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.AreasListScreen
@@ -83,7 +85,7 @@ fun Home() {
         }
         composable("messages") {
             guard()
-            ProjectsListForCommunicationsScreen(
+            ProjectsListForCommunicationsScreen (
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
