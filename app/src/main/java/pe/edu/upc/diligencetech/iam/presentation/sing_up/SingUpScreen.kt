@@ -2,6 +2,7 @@ package pe.edu.upc.diligencetech.iam.presentation.sing_up
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -256,7 +257,24 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel(), onSignInTask: () 
                                 )
                             },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            trailingIcon = {
+                                val image = if (passwordVisible) {
+                                    painterResource(id = R.drawable.show_password_icon)
+                                } else {
+                                    painterResource(id = R.drawable.hide_password_icon)
+                                }
+
+                                Image(
+                                    painter = image,
+                                    contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                                    modifier = Modifier
+                                        .size(30.dp) // Cambia el tamaño del ícono aquí (20.dp es un ejemplo)
+                                        .clickable {
+                                            viewModel.onPasswordVisibilityChange(!passwordVisible)
+                                        }
+                                )
+                            }
                         )
                     }
                     Row(
