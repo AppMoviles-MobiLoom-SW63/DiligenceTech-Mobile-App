@@ -35,11 +35,14 @@ class DueDiligenceProjectsRepository(
     suspend fun createDueDiligenceProject(dueDiligenceProjectResource: DueDiligenceProjectResource): Resource<List<DueDiligenceProject>>
             = withContext(Dispatchers.IO) {
         try {
+            Log.d("No falla tan rapido", "${Constants.token}")
             val response = service.createDueDiligenceProject(dueDiligenceProjectResource)
             if (response.isSuccessful) {
-                val resource = getDueDiligenceProjects()
+                Log.d("Success", "Sorprendentemente")
+                val resource = getDueDiligenceProjectsByUsername()
                 return@withContext resource
             }
+            Log.d("Funciono con Error", "Wow")
             return@withContext Resource.Error("Something went wrong")
         } catch (e: Exception) {
             return@withContext Resource.Error("Something went wrong: ${e.message}")

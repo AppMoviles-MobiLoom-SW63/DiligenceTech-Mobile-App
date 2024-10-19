@@ -215,7 +215,7 @@ fun ProjectCard(
         modifier = Modifier
             .width(180.dp)
             .height(180.dp)
-            .clickable {  },
+            .clickable { },
         onClick = onClick,
         shape = RoundedCornerShape(30.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
@@ -374,7 +374,7 @@ fun ProjectInputDialog(
                 ) {
                     Button(
                         onClick = {
-                            onAddProject()
+                            onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
@@ -396,7 +396,9 @@ fun ProjectInputDialog(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Button(
-                        onClick = onDismiss,
+                        onClick = {
+                            onAddProject()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFD6773D),
                             contentColor = Color.White

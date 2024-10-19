@@ -1,5 +1,6 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,13 +62,16 @@ class ProjectsListViewModel @Inject constructor(
         // transform into correct format
         val buyAgents = rawBuyAgents.value.split(",").map { it.trim() }
         val sellAgents = rawSellAgents.value.split(",").map { it.trim() }
+        Log.d("Add Project", "Adding project")
         var roles: List<Boolean> = buyAgents.map {
-            return true
+            return@map true
         }
+        Log.d("Add Project", "Adding project")
         val agents = buyAgents + sellAgents
         roles = roles + sellAgents.map {
-            return false
+            return@map false
         }
+        Log.d("Add Project", "Adding project")
         val projectResource = DueDiligenceProjectResource(roles, agents, newProject.value)
         viewModelScope.launch {
             val resource = repository.createDueDiligenceProject(projectResource)
