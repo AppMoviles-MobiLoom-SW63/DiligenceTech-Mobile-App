@@ -35,7 +35,7 @@ class DueDiligenceProjectsRepository(
     suspend fun createDueDiligenceProject(dueDiligenceProjectResource: DueDiligenceProjectResource): Resource<List<DueDiligenceProject>>
             = withContext(Dispatchers.IO) {
         try {
-            val response = service.createDueDiligenceProject(dueDiligenceProjectResource).execute()
+            val response = service.createDueDiligenceProject(dueDiligenceProjectResource)
             if (response.isSuccessful) {
                 val resource = getDueDiligenceProjects()
                 return@withContext resource
@@ -49,10 +49,8 @@ class DueDiligenceProjectsRepository(
     suspend fun getDueDiligenceProjectsByUsername(): Resource<List<DueDiligenceProject>>
             = withContext(Dispatchers.IO) {
         try {
-            Log.d("Paso", "Si")
             val response = service.getDueDiligenceProjectsByUsername(Constants.username!!)
-            // val response = service.getDueDiligenceProjects()
-            Log.d("No falla tan rapido", "Si")
+            Log.d("No falla tan rapido", "${Constants.token}")
             if (response.isSuccessful) {
                 Log.d("Success", "Sorprendentemente")
                 val projectDtos = response.body()

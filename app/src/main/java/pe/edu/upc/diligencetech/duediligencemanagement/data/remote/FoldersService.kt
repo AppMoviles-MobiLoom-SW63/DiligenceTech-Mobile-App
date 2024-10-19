@@ -17,7 +17,6 @@ interface FoldersService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @PUT("folders/{folderId}")
@@ -26,7 +25,6 @@ interface FoldersService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("folders")
@@ -35,7 +33,6 @@ interface FoldersService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @POST("folders")
@@ -44,7 +41,6 @@ interface FoldersService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("folders/{areaId}")

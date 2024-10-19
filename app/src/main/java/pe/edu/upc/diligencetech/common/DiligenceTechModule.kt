@@ -31,7 +31,7 @@ object DiligenceTechModule {
     @Singleton
     fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
-            //.addInterceptor(authInterceptor)
+            .addInterceptor(authInterceptor)
             .build()
     }
 

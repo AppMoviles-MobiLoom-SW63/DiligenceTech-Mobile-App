@@ -28,7 +28,6 @@ interface AreasService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("areas")
@@ -37,7 +36,6 @@ interface AreasService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @POST("areas")
@@ -46,7 +44,6 @@ interface AreasService {
     @Headers(
         value = [
             "accept: application/json",
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1MjAyMjE4MjI3QHVwYy5lZHUucGUiLCJpYXQiOjE3MjczNjM2NzksImV4cCI6MTcyNzk2ODQ3OX0.UI1nO9IVSGay-SLkWqco1daoG4a3rXTYFxuImNZIw4o"
         ]
     )
     @GET("areas/{projectId}")
