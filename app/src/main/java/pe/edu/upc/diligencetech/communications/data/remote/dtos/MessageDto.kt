@@ -1,6 +1,7 @@
 package pe.edu.upc.diligencetech.communications.data.remote.dtos
 
 import com.google.gson.annotations.SerializedName
+import pe.edu.upc.diligencetech.communications.domain.Messages
 
 data class MessageDto(
     @SerializedName("createdAt")
@@ -14,3 +15,5 @@ data class MessageDto(
     @SerializedName("userId")
     val userId: Long
 )
+
+fun MessageDto.toMessage() = Messages(createdAt, id, message, projectId, userId)
