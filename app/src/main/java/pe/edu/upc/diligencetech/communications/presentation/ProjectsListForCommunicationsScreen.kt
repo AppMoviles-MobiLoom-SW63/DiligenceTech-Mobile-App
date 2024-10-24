@@ -37,19 +37,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.communications.presentation.ProjectsListViewModel
 
 @Composable
 fun ProjectsListForCommunicationsScreen(
+    viewModel: ProjectsListViewModel = hiltViewModel(),
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onEnteringProjectClick: (projectId: Long) -> Unit
 ) {
 
     WorkbenchScreen(
@@ -60,6 +66,12 @@ fun ProjectsListForCommunicationsScreen(
         onSettingsClick = onSettingsClick,
         myOption = "Mensajes"
     ) {
+        val projects = viewModel.projects
+
+        val projectsObtained by remember {
+            mutableStateOf(viewModel.getProjects())
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -106,33 +118,29 @@ fun ProjectsListForCommunicationsScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
-                ProjectCard(
-                    projectName = "Proyecto Ronaldo",
-                ) {}
+                for (i in projects.indices step 2) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        ProjectCard(
+                            projectName = projects[i].projectName
+                        ) {
+                            onEnteringProjectClick(projects[i].id)
+                        }
+                        if (i + 1 < projects.size) {
+                            ProjectCard(
+                                projectName = projects[i + 1].projectName,
+                            ) {
+                                onEnteringProjectClick(projects[i + 1].id)
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
             }
 
 
