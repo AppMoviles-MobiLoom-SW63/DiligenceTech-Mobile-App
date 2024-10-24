@@ -29,6 +29,21 @@ class MessagesRepository(
         }
     }
 
+    suspend fun getMessageById(messageId: Long): Resource<Messages> {
+        return try {
+            val response = service.getMessageById(messageId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Resource.Success(it.toMessage())
+                } ?: Resource.Error("Message not found")
+            } else {
+                Resource.Error("Error fetching message")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Exception: ${e.message}")
+        }
+    }
+
     suspend fun getMessagesByUsername(username: String): Resource<List<Messages>> = withContext(Dispatchers.IO) {
         try {
             val response: Response<List<MessageDto>> = service.getMessagesByUserId(username)

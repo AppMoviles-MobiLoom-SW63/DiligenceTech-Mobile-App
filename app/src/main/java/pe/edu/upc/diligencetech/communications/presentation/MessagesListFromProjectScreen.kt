@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.communications.domain.Messages
@@ -66,6 +67,7 @@ fun MessagesListFromProjectScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    navController: NavController,
     viewModel: MessagesViewModel = hiltViewModel()
 ) {
 
@@ -197,7 +199,9 @@ fun MessagesListFromProjectScreen(
                     MessageCard(
                         contactName = message.userId.toString(),
                         messageTitle = message.id.toString(),
-                        onClick = {}
+                        onClick = {
+                            navController.navigate("messageDetailsScreen/${message.id}")
+                        }
                     )
                 }
             }
