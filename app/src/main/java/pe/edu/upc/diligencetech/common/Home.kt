@@ -105,14 +105,18 @@ fun Home() {
         }
         composable("settings") {
             guard()
-            SettingsScreen (
+            SettingsScreen(
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
-                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                onLogoutSuccess = {
+                    clearBackStackAndNavigateTo("sign-in") // Redirige a la pantalla de inicio de sesión
+                }
             )
         }
+
         composable(
             route = "areas/{projectId}",
             arguments = listOf(navArgument("projectId") {
