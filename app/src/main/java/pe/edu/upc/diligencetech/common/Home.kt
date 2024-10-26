@@ -24,8 +24,6 @@ fun Home() {
     val authenticationGuard = remember { AuthenticationGuard() }
     val navController = rememberNavController()
 
-
-
     fun guard() {
         authenticationGuard.guard {
             navController.navigate("sign-in") {
@@ -72,7 +70,7 @@ fun Home() {
         }
         composable("projects") {
             guard()
-            ProjectsListScreen (
+            ProjectsListScreen(
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
@@ -85,7 +83,7 @@ fun Home() {
         }
         composable("messages") {
             guard()
-            ProjectsListForCommunicationsScreen (
+            ProjectsListForCommunicationsScreen(
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
@@ -95,7 +93,7 @@ fun Home() {
         }
         composable("profile") {
             guard()
-            ProfileScreen (
+            ProfileScreen(
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
@@ -135,8 +133,9 @@ fun Home() {
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
                 onEnteringAreaClick = { areaId ->
                     navController.navigate("folders/$areaId")
-                }
-            ) { }
+                },
+                onBackClick = { navController.popBackStack() } // Redirect to FoldersListScreen
+            )
         }
         composable(
             route = "folders/{areaId}",
@@ -147,14 +146,15 @@ fun Home() {
             val areaId = backStackEntry.arguments?.getLong("areaId") ?: return@composable
 
             guard()
-            FoldersListScreen (
+            FoldersListScreen(
                 areaId = areaId,
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
-                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
-            ) { }
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                onBackClick = { clearBackStackAndNavigateTo("projects") } // Redirect to ProjectsListScreen
+            )
         }
     }
 }
