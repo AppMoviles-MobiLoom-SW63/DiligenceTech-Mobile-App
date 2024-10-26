@@ -75,7 +75,7 @@ fun MessagesListFromProjectScreen(
     var isExpanded by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val selectedTab = remember { mutableStateOf("Recibidos") }
-    var messages by remember { mutableStateOf<List<Messages>>(emptyList()) }
+    val messages by remember { mutableStateOf<List<Messages>>(emptyList()) }
 
     viewModel.getMessagesByProjectId(projectId)
 
