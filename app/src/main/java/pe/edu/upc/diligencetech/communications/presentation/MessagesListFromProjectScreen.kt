@@ -1,5 +1,6 @@
 package pe.edu.upc.diligencetech.communications.presentation
 
+import android.os.Message
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,9 +38,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.communications.domain.Messages
@@ -75,9 +79,12 @@ fun MessagesListFromProjectScreen(
     var isExpanded by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val selectedTab = remember { mutableStateOf("Recibidos") }
-    val messages by remember { mutableStateOf<List<Messages>>(emptyList()) }
 
-    viewModel.getMessagesByProjectId(projectId)
+    LaunchedEffect(projectId) {
+        viewModel.fetchMessagesForProject(projectId)
+    }
+
+    val messages by viewModel.messages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -197,8 +204,8 @@ fun MessagesListFromProjectScreen(
             ){
                 messages.forEach { message ->
                     MessageCard(
-                        contactName = message.userId.toString(),
-                        messageTitle = message.id.toString(),
+                        contactName = message.createdAt,
+                        messageTitle = message.message,
                         onClick = {
                             navController.navigate("messageDetailsScreen/${message.id}")
                         }
