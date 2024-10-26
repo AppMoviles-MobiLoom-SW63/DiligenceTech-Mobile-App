@@ -151,14 +151,16 @@ fun ProjectsListScreen(
                         ) {
                             ProjectCard(
                                 projectName = projects[i].projectName,
-                                projectType = ""
+                                projectType = "",
+                                projectNumber = i + 1
                             ) {
                                 onEnteringProjectClick(projects[i].id)
                             }
                             if (i + 1 < projects.size) {
                                 ProjectCard(
                                     projectName = projects[i + 1].projectName,
-                                    projectType = ""
+                                    projectType = "",
+                                    projectNumber = i + 2
                                 ) {
                                     onEnteringProjectClick(projects[i + 1].id)
                                 }
@@ -209,6 +211,7 @@ fun ProjectsListScreen(
 fun ProjectCard(
     projectName: String,
     projectType: String,
+    projectNumber: Int,
     onClick: () -> Unit
 ) {
     Card(
@@ -233,7 +236,7 @@ fun ProjectCard(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = "1.",
+                    text = "$projectNumber.",
                     color = Color.White,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold

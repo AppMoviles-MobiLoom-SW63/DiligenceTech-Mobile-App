@@ -88,7 +88,10 @@ fun Home() {
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
-                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                onEnteringProjectClick = { projectId ->
+                    navController.navigate("messagesList/$projectId")
+                }
             )
         }
         composable("profile") {
@@ -154,6 +157,25 @@ fun Home() {
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
                 onBackClick = { clearBackStackAndNavigateTo("projects") } // Redirect to ProjectsListScreen
+            )
+        }
+        composable(
+            route = "messagesList/{projectId}",
+            arguments = listOf(navArgument("projectId") {
+                type = NavType.LongType
+            })
+        ){ backStackEntry ->
+            val projectId = backStackEntry.arguments?.getLong("projectId") ?: return@composable
+
+            guard()
+            MessagesListFromProjectScreen(
+                projectId = projectId,
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                navController = navController
             )
         }
     }

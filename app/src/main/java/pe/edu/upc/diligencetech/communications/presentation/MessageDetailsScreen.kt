@@ -25,6 +25,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,18 +35,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @Composable
 fun MessageDetailsScreen(
+    messageId: Long,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    viewModel: MessagesViewModel = hiltViewModel()
 ) {
+    val message by viewModel.getMessageById(messageId).collectAsState(initial = null)
+
     WorkbenchScreen(
         onHomeClick = onHomeClick,
         onProjectsClick = onProjectsClick,
@@ -91,7 +98,7 @@ fun MessageDetailsScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = "Consulta sobre las contrataciones",
+                    text = message?.id.toString(),
                     style = TextStyle(
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,
@@ -123,14 +130,14 @@ fun MessageDetailsScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "Jeremy Quispe",
+                        text = message?.userId.toString(),
                         color = Color.White,
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp
                     )
                     Text(
-                        text = "u2022192212@upc.edu.pe",
+                        text = message?.userId.toString(),
                         color = Color.White,
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Normal,
@@ -165,18 +172,7 @@ fun MessageDetailsScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = "Espero que este correo le encuentre bien.\n" +
-                                    "\n" +
-                                    "Me pongo en contacto con usted como representante de Vinicius, un talentoso delantero con una destacada trayectoria en el fútbol europeo. Actualmente, estamos explorando nuevas oportunidades de contratación para la próxima temporada y creemos que el Real Madrid podría ser un excelente destino para continuar con su desarrollo y aportar al equipo.\n" +
-                                    "\n" +
-                                    "Nos gustaría saber si están interesados en discutir posibles acuerdos o si existen vacantes disponibles que puedan ajustarse a las habilidades y perfil de Vinicius. Estoy seguro de que su incorporación al equipo podría ser de gran valor, y me encantaría coordinar una reunión o llamada para hablar en más detalle sobre sus cualidades y expectativas.\n" +
-                                    "\n" +
-                                    "Quedo a la espera de su respuesta, y agradezco de antemano su atención y consideración.\n" +
-                                    "\n" +
-                                    "Un cordial saludo,\n" +
-                                    "\n" +
-                                    "Jeremy Quispe\n" +
-                                    "Representante de Vinicius",
+                            text = message?.message.toString(),
                             style = TextStyle(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Normal,

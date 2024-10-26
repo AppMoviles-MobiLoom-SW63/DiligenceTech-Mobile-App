@@ -1,5 +1,6 @@
 package pe.edu.upc.diligencetech.communications.presentation
 
+import android.os.Message
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,9 +37,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,26 +54,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
+import pe.edu.upc.diligencetech.communications.domain.Messages
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectInputDialog
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @Composable
 fun MessagesListFromProjectScreen(
+    projectId: Long,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    navController: NavController,
+    viewModel: MessagesViewModel = hiltViewModel()
 ) {
-
-    var showDialog by remember { mutableStateOf(false) }
-    val selectedTab = remember { mutableStateOf("Recibidos") }
 
     // Estado para manejar el icono de flecha
     var isExpanded by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    val selectedTab = remember { mutableStateOf("Recibidos") }
+
+    LaunchedEffect(projectId) {
+        viewModel.fetchMessagesForProject(projectId)
+    }
+
+    val messages by viewModel.messages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -187,27 +202,15 @@ fun MessagesListFromProjectScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                MessageCard(
-                    contactName = "Juan Perez",
-                    messageTitle = "Hola, ¿cómo estás?",
-                    onClick = {}
-                )
-                MessageCard(
-                    contactName = "Juan Perez",
-                    messageTitle = "Hola, ¿cómo estás?",
-                    onClick = {}
-                )
-                MessageCard(
-                    contactName = "Juan Perez",
-                    messageTitle = "Hola, ¿cómo estás?",
-                    onClick = {}
-                )
-                MessageCard(
-                    contactName = "Juan Perez",
-                    messageTitle = "Hola, ¿cómo estás?",
-                    onClick = {}
-                )
-
+                messages.forEach { message ->
+                    MessageCard(
+                        contactName = message.createdAt,
+                        messageTitle = message.message,
+                        onClick = {
+                            navController.navigate("messageDetailsScreen/${message.id}")
+                        }
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.padding(12.dp))
@@ -216,7 +219,6 @@ fun MessagesListFromProjectScreen(
                 MessageInput (
                     onDismiss = {
                         showDialog = false
-
                     },
                     onAddMessage = {
                         showDialog = false

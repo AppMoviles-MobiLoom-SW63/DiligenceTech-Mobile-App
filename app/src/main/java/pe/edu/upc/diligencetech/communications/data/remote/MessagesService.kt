@@ -3,6 +3,7 @@ package pe.edu.upc.diligencetech.communications.data.remote
 import pe.edu.upc.diligencetech.communications.data.remote.dtos.MessageDto
 import pe.edu.upc.diligencetech.communications.data.remote.resources.MessageResource
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -31,8 +32,8 @@ interface MessagesService {
             "accept: application/json"
         ]
     )
-    @GET("messages/{emailId}")
-    suspend fun getMessageById(@Path("emailId") emailId: Long): Call<MessageDto?>
+    @GET("messages/{id}")
+    suspend fun getMessageById(@Path("id") messageId: Long): Response<MessageDto?>
 
     @Headers(
         value = [
@@ -40,6 +41,13 @@ interface MessagesService {
         ]
     )
     @GET("messages/project/{projectId}")
-    suspend fun getMessagesByProjectId(@Path("projectId") projectId: Long): Call<List<MessageDto>>
+    suspend fun getMessagesByProjectId(@Path("projectId") projectId: Long): Response<List<MessageDto>>
 
+    @Headers(
+        value = [
+            "accept: application/json"
+        ]
+    )
+    @GET("messages/{emailId}")
+    suspend fun getMessagesByUserId(@Path("emailId") username: String): Response<List<MessageDto>>
 }
