@@ -6,6 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import pe.edu.upc.diligencetech.communications.data.remote.MessagesService
+import pe.edu.upc.diligencetech.communications.data.repositories.MessagesRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.DueDiligenceProjectsService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.FoldersService
@@ -84,6 +86,14 @@ object DiligenceTechModule {
 
     @Provides
     @Singleton
+    fun provideMessagesService(
+        retrofit: Retrofit
+    ): MessagesService {
+        return retrofit.create(MessagesService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthenticationRepository(authenticationService: AuthenticationService): AuthenticationRepository {
         return AuthenticationRepository(authenticationService)
     }
@@ -104,5 +114,11 @@ object DiligenceTechModule {
     @Singleton
     fun provideAreasRepository(areasService: AreasService): AreasRepository {
         return AreasRepository(areasService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessagesRepository(messagesService: MessagesService): MessagesRepository {
+        return MessagesRepository(messagesService)
     }
 }

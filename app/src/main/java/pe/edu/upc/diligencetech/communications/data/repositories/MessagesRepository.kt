@@ -9,8 +9,9 @@ import pe.edu.upc.diligencetech.communications.data.remote.dtos.MessageDto
 import pe.edu.upc.diligencetech.communications.data.remote.dtos.toMessage
 import pe.edu.upc.diligencetech.communications.domain.Messages
 import retrofit2.Response
+import javax.inject.Inject
 
-class MessagesRepository(
+class MessagesRepository @Inject constructor(
     private val service: MessagesService,
 ) {
     suspend fun getMessagesByProjectId(projectId: Long): Resource<List<Messages>> = withContext(Dispatchers.IO) {
