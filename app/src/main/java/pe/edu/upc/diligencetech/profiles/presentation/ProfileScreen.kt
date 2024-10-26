@@ -359,29 +359,6 @@ fun ProfileScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
             ) {
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(5.dp)), // Bordes redondeados
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF9B4A18) // Color del fondo
-                    )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.log_out_icon), // El ícono de la puerta
-                        contentDescription = "Logout Icon",
-                        tint = Color.White, // Color del ícono
-                        modifier = Modifier.size(18.dp) // Tamaño del ícono
-                    )
-                    Spacer(modifier = Modifier.width(8.dp)) // Espacio entre ícono y texto
-                    Text(
-                        text = "Cerrar sesión",
-                        color = Color.White,
-                        fontFamily = Montserrat,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
