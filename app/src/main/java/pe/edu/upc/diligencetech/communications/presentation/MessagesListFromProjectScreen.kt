@@ -259,7 +259,7 @@ fun MessageCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(bottom = 16.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth()
             .height(75.dp)
             .clickable {  },

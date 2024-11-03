@@ -155,7 +155,7 @@ fun ProjectCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(bottom = 16.dp)
+            .padding(bottom = 5.dp)
             .fillMaxWidth()
             .height(70.dp)
             .clickable {  },
