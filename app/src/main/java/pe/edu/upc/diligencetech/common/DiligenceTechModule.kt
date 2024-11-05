@@ -8,6 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import pe.edu.upc.diligencetech.communications.data.remote.MessagesService
 import pe.edu.upc.diligencetech.communications.data.repositories.MessagesRepository
+import pe.edu.upc.diligencetech.dashboard.presentation.DashboardRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.DueDiligenceProjectsService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.FoldersService
@@ -120,5 +121,10 @@ object DiligenceTechModule {
     @Singleton
     fun provideMessagesRepository(messagesService: MessagesService): MessagesRepository {
         return MessagesRepository(messagesService)
+    }
+
+    @Provides
+    fun provideDashboardRepository(dueDiligenceProjectsService: DueDiligenceProjectsService): DashboardRepository {
+        return DashboardRepository(dueDiligenceProjectsService)
     }
 }
