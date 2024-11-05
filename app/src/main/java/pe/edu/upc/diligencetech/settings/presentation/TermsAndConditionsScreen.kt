@@ -43,6 +43,8 @@ fun TermsAndConditionsScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onBackClick: () -> Unit // Nuevo parámetro para navegación hacia atrás
+
 ) = WorkbenchScreen(
     onHomeClick = onHomeClick,
     onProjectsClick = onProjectsClick,
@@ -70,7 +72,7 @@ fun TermsAndConditionsScreen(
                     modifier = Modifier
                         .size(48.dp)
                         .background(Color(0xFF282828), shape = CircleShape)
-                        .clickable {  },
+                        .clickable { onBackClick() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

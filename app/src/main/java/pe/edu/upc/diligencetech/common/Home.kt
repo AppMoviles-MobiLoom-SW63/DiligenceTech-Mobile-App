@@ -132,7 +132,9 @@ fun Home() {
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
-                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                onBackClick = { navController.navigate("settings") } // Navega de regreso a SettingsScreen
+
             )
         }
 
