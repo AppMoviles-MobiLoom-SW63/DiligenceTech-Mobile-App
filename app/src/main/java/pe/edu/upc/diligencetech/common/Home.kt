@@ -7,11 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import pe.edu.upc.diligencetech.communications.presentation.MessageDetailsScreen
 import pe.edu.upc.diligencetech.communications.presentation.MessagesListFromProjectScreen
 import pe.edu.upc.diligencetech.communications.presentation.ProjectsListForCommunicationsScreen
 import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.AreasListScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.presentation.DocumentsListScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.FoldersListScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
@@ -94,6 +94,7 @@ fun Home() {
                 }
             )
         }
+
         composable("profile") {
             guard()
             ProfileScreen(
@@ -118,6 +119,7 @@ fun Home() {
             )
         }
 
+        // Ajuste en AreasListScreen
         composable(
             route = "areas/{projectId}",
             arguments = listOf(navArgument("projectId") {
@@ -135,17 +137,21 @@ fun Home() {
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
                 onEnteringAreaClick = { areaId ->
-                    navController.navigate("folders/$areaId")
+                    navController.navigate("folders/$projectId/$areaId")
                 },
-                onBackClick = { navController.popBackStack() } // Redirect to FoldersListScreen
+                onBackClick = { navController.navigate("projects") } // Redirige a ProjectsListScreen
             )
         }
+
+        // Ajuste en FoldersListScreen para recibir projectId y areaId
         composable(
-            route = "folders/{areaId}",
-            arguments = listOf(navArgument("areaId") {
-                type = NavType.LongType
-            })
+            route = "folders/{projectId}/{areaId}",
+            arguments = listOf(
+                navArgument("projectId") { type = NavType.LongType },
+                navArgument("areaId") { type = NavType.LongType }
+            )
         ) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getLong("projectId") ?: return@composable
             val areaId = backStackEntry.arguments?.getLong("areaId") ?: return@composable
 
             guard()
@@ -156,9 +162,10 @@ fun Home() {
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
-                onBackClick = { clearBackStackAndNavigateTo("projects") } // Redirect to ProjectsListScreen
+                onBackClick = { navController.navigate("areas/$projectId") } // Redirige a AreasListScreen del mismo proyecto
             )
         }
+
         composable(
             route = "messagesList/{projectId}",
             arguments = listOf(navArgument("projectId") {

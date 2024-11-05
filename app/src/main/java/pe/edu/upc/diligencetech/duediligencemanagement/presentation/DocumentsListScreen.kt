@@ -69,7 +69,7 @@ fun DocumentsListScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit // Este onBackClick redirigirá a FoldersListScreen
 ){
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -102,7 +102,7 @@ fun DocumentsListScreen(
                         modifier = Modifier
                             .size(48.dp)
                             .background(Color(0xFF282828), shape = CircleShape)
-                            .clickable { onBackClick() },
+                            .clickable { onBackClick() }, // Redirige a FoldersListScreen
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -112,7 +112,6 @@ fun DocumentsListScreen(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
 
                     Spacer(modifier = Modifier.width(16.dp))
 
