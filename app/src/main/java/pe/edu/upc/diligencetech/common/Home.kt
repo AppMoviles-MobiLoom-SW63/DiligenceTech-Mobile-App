@@ -2,6 +2,7 @@ package pe.edu.upc.diligencetech.common
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -105,7 +106,8 @@ fun Home() {
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
-                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+
             )
         }
 

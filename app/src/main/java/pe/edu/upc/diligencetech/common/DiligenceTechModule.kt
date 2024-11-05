@@ -17,6 +17,8 @@ import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDili
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.FoldersRepository
 import pe.edu.upc.diligencetech.iam.data.remote.AuthenticationService
 import pe.edu.upc.diligencetech.iam.data.repositories.AuthenticationRepository
+import pe.edu.upc.diligencetech.profiles.data.remote.UsersService
+import pe.edu.upc.diligencetech.profiles.data.repositories.UserRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -124,7 +126,20 @@ object DiligenceTechModule {
     }
 
     @Provides
+    @Singleton
     fun provideDashboardRepository(dueDiligenceProjectsService: DueDiligenceProjectsService): DashboardRepository {
         return DashboardRepository(dueDiligenceProjectsService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(usersService: UsersService): UserRepository {
+        return UserRepository(usersService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUsersService(retrofit: Retrofit): UsersService {
+        return retrofit.create(UsersService::class.java)
     }
 }
