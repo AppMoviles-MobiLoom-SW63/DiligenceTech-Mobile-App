@@ -18,6 +18,7 @@ import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_up.SignUpScreen
 import pe.edu.upc.diligencetech.profiles.presentation.ProfileScreen
 import pe.edu.upc.diligencetech.settings.presentation.SettingsScreen
+import pe.edu.upc.diligencetech.settings.presentation.TermsAndConditionsScreen
 
 @Composable
 fun Home() {
@@ -46,7 +47,8 @@ fun Home() {
                 },
                 onSignInTask = {
                     clearBackStackAndNavigateTo("sign-in")
-                })
+                }
+            )
         }
         composable("sign-in") {
             SignInScreen(
@@ -56,7 +58,8 @@ fun Home() {
                 onSignInTask = { id, username, token ->
                     authenticationGuard.signIn(id, username, token)
                     clearBackStackAndNavigateTo("projects")
-                })
+                }
+            )
         }
         composable("dashboard") {
             guard()
@@ -105,6 +108,8 @@ fun Home() {
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") }
             )
         }
+
+        // Settings screen with privacy policy navigation
         composable("settings") {
             guard()
             SettingsScreen(
@@ -115,11 +120,23 @@ fun Home() {
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
                 onLogoutSuccess = {
                     clearBackStackAndNavigateTo("sign-in")
-                }
+                },
+                onPrivacyPolicyClick = { navController.navigate("terms-and-conditions") }
             )
         }
 
-        // Ajuste en AreasListScreen
+        // Route to Terms and Conditions screen
+        composable("terms-and-conditions") {
+            TermsAndConditionsScreen(
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") }
+            )
+        }
+
+        // Adjusted AreasListScreen
         composable(
             route = "areas/{projectId}",
             arguments = listOf(navArgument("projectId") {
@@ -139,11 +156,11 @@ fun Home() {
                 onEnteringAreaClick = { areaId ->
                     navController.navigate("folders/$projectId/$areaId")
                 },
-                onBackClick = { navController.navigate("projects") } // Redirige a ProjectsListScreen
+                onBackClick = { navController.navigate("projects") }
             )
         }
 
-        // Ajuste en FoldersListScreen para recibir projectId y areaId
+        // Adjusted FoldersListScreen to receive projectId and areaId
         composable(
             route = "folders/{projectId}/{areaId}",
             arguments = listOf(
@@ -162,7 +179,7 @@ fun Home() {
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
-                onBackClick = { navController.navigate("areas/$projectId") } // Redirige a AreasListScreen del mismo proyecto
+                onBackClick = { navController.navigate("areas/$projectId") }
             )
         }
 
@@ -171,7 +188,7 @@ fun Home() {
             arguments = listOf(navArgument("projectId") {
                 type = NavType.LongType
             })
-        ){ backStackEntry ->
+        ) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getLong("projectId") ?: return@composable
 
             guard()

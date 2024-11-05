@@ -27,17 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
-import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
@@ -48,8 +44,9 @@ fun SettingsScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel(), // Add ViewModel as a parameter
-    onLogoutSuccess: () -> Unit // Add a callback for logout success
+    viewModel: SettingsViewModel = hiltViewModel(),
+    onLogoutSuccess: () -> Unit,
+    onPrivacyPolicyClick: () -> Unit // Nuevo parámetro para la navegación
 ) = WorkbenchScreen(
     onHomeClick = onHomeClick,
     onProjectsClick = onProjectsClick,
@@ -58,14 +55,14 @@ fun SettingsScreen(
     onSettingsClick = onSettingsClick,
     myOption = "Ajustes"
 ) {
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .background(Color(0xFF1A1A1A)),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = "Membresía DiligenceTech +",
                 style = TextStyle(
@@ -78,6 +75,8 @@ fun SettingsScreen(
                     .align(Alignment.Start)
                     .padding(start = 16.dp, bottom = 30.dp, top = 30.dp)
             )
+
+            // Información de Suscripción
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -96,16 +95,17 @@ fun SettingsScreen(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
+
+            // Detalles de suscripción
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp) // Añade un padding general para la columna
+                    .padding(horizontal = 16.dp)
             ) {
-                // Primera fila - Próxima fecha de pago (alineado a la izquierda)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 30.dp) // Espaciado superior
+                        .padding(top = 30.dp)
                 ) {
                     Text(
                         text = "Próxima fecha de pago: ",
@@ -115,7 +115,7 @@ fun SettingsScreen(
                             color = Color.White,
                             fontSize = 16.sp,
                         ),
-                        modifier = Modifier.align(Alignment.CenterVertically) // Centra verticalmente el texto en la fila
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text(
                         text = "25/11/2024",
@@ -125,15 +125,14 @@ fun SettingsScreen(
                             color = Color.White,
                             fontSize = 16.sp,
                         ),
-                        modifier = Modifier.align(Alignment.CenterVertically) // Centra verticalmente el texto en la fila
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
 
-                // Segunda fila - Meses en Diligence Tech (alineado a la izquierda)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp, bottom = 20.dp) // Espaciado superior e inferior
+                        .padding(top = 20.dp, bottom = 20.dp)
                 ) {
                     Text(
                         text = "Meses en Diligence Tech: ",
@@ -143,7 +142,7 @@ fun SettingsScreen(
                             color = Color.White,
                             fontSize = 16.sp,
                         ),
-                        modifier = Modifier.align(Alignment.CenterVertically) // Centra verticalmente el texto en la fila
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text(
                         text = "7 meses",
@@ -153,26 +152,26 @@ fun SettingsScreen(
                             color = Color.White,
                             fontSize = 16.sp,
                         ),
-                        modifier = Modifier.align(Alignment.CenterVertically) // Centra verticalmente el texto en la fila
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center // Centro horizontal del botón
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
                         onClick = {},
                         modifier = Modifier
-                            .clip(RoundedCornerShape(1.dp)) // Bordes ligeramente redondeados
-                            .padding(8.dp), // Padding para el botón
+                            .clip(RoundedCornerShape(1.dp))
+                            .padding(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFD6773D) // Color del botón: #D6773D
+                            containerColor = Color(0xFFD6773D)
                         )
                     ) {
                         Text(
-                            text = "Planes disponibles", // Cambia el texto por el que necesites
+                            text = "Planes disponibles",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontFamily = Montserrat
@@ -180,7 +179,9 @@ fun SettingsScreen(
                     }
                 }
             }
+
             Spacer(modifier = Modifier.padding(10.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -199,18 +200,20 @@ fun SettingsScreen(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
+
+            // Opciones de seguridad
             Spacer(modifier = Modifier.padding(16.dp))
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp), // Espacio alrededor de la tarjeta
+                    .padding(16.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF282828) // Color de fondo de la tarjeta
+                    containerColor = Color(0xFF282828)
                 )
             ) {
                 Column(
-                    modifier = Modifier.padding(18.dp) // Espaciado interno
+                    modifier = Modifier.padding(18.dp)
                 ) {
                     Text(
                         text = "Autenticación de dos factores",
@@ -229,9 +232,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.Normal,
                             color = Color.White,
                             fontSize = 14.sp,
-                            textAlign = TextAlign.Justify // Justifica el texto
-
-
+                            textAlign = TextAlign.Justify
                         )
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -253,8 +254,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.Normal,
                             color = Color.White,
                             fontSize = 14.sp,
-                            textAlign = TextAlign.Justify // Justifica el texto
-
+                            textAlign = TextAlign.Justify
                         )
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -276,8 +276,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.Normal,
                             color = Color.White,
                             fontSize = 14.sp,
-                            textAlign = TextAlign.Justify // Justifica el texto
-
+                            textAlign = TextAlign.Justify
                         )
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -299,8 +298,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.Normal,
                             color = Color.White,
                             fontSize = 14.sp,
-                            textAlign = TextAlign.Justify // Justifica el texto
-
+                            textAlign = TextAlign.Justify
                         )
                     )
                 }
@@ -311,19 +309,19 @@ fun SettingsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center // Centro horizontal del botón
+                horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = {},
+                    onClick = { onPrivacyPolicyClick() },
                     modifier = Modifier
-                        .clip(RoundedCornerShape(1.dp)) // Bordes ligeramente redondeados
-                        .padding(8.dp), // Padding para el botón
+                        .clip(RoundedCornerShape(1.dp))
+                        .padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD6773D) // Color del botón: #D6773D
+                        containerColor = Color(0xFFD6773D)
                     )
                 ) {
                     Text(
-                        text = "Políticas de privacidad", // Cambia el texto por el que necesites
+                        text = "Políticas de privacidad",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontFamily = Montserrat
@@ -335,22 +333,22 @@ fun SettingsScreen(
 
             Button(
                 onClick = {
-                    viewModel.cerrarSesion(onLogoutSuccess) // Call the ViewModel's logout function
+                    viewModel.cerrarSesion(onLogoutSuccess)
                 },
                 modifier = Modifier
                     .padding(8.dp)
-                    .clip(RoundedCornerShape(5.dp)), // Bordes redondeados
+                    .clip(RoundedCornerShape(5.dp)),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF9B4A18) // Color del fondo
+                    containerColor = Color(0xFF9B4A18)
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.log_out_icon), // El ícono de la puerta
+                    painter = painterResource(id = R.drawable.log_out_icon),
                     contentDescription = "Logout Icon",
-                    tint = Color.White, // Color del ícono
-                    modifier = Modifier.size(18.dp) // Tamaño del ícono
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre ícono y texto
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Cerrar sesión",
                     color = Color.White,
@@ -358,7 +356,6 @@ fun SettingsScreen(
                     fontWeight = FontWeight.Bold
                 )
             }
-
         }
     }
 }
