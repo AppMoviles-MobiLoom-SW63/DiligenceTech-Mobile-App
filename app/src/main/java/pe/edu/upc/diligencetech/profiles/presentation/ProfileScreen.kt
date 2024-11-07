@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +53,8 @@ fun ProfileScreen(
 ) {
 
     val user = profileViewModel.user.collectAsState().value
+    val projectCount by profileViewModel.projectCount.collectAsState()
+
 
     // Get the current date and format it
     val currentDate = LocalDate.now()
@@ -171,7 +174,7 @@ fun ProfileScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "2",
+                                    text = projectCount.toString(),
                                     color = Color.White,
                                     fontSize = 25.sp,
                                     fontWeight = FontWeight.Bold,
