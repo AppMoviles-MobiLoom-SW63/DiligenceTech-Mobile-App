@@ -68,7 +68,7 @@ fun AreasListScreen(
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onEnteringAreaClick: (areaId: Long) -> Unit,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     WorkbenchScreen(
         onHomeClick = onHomeClick,

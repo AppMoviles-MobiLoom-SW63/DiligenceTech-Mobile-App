@@ -60,7 +60,7 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 @Composable
 fun FoldersListScreen(
     viewModel: FoldersListViewModel = hiltViewModel(),
-    areaId: Long = 0,
+    areaId: Long,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
