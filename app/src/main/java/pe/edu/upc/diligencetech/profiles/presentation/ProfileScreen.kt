@@ -1,5 +1,7 @@
 package pe.edu.upc.diligencetech.profiles.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,7 +29,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onHomeClick: () -> Unit,
@@ -46,6 +52,11 @@ fun ProfileScreen(
 ) {
 
     val user = profileViewModel.user.collectAsState().value
+
+    // Get the current date and format it
+    val currentDate = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM, yyyy", Locale("es", "ES"))
+    val formattedDate = currentDate.format(formatter)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -105,7 +116,7 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "11 de Septiembre, 2024",
+                                text = formattedDate,
                                 color = Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
