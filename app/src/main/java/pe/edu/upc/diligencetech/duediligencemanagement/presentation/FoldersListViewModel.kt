@@ -9,13 +9,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.FolderResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.AreasRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.FoldersRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.Folder
 import javax.inject.Inject
 
 @HiltViewModel
 class FoldersListViewModel @Inject constructor(
-    private val repository: FoldersRepository
+    private val repository: FoldersRepository,
+    private val areasRepository: AreasRepository
 ) : ViewModel() {
 
     private var _folders = SnapshotStateList<Folder>()
@@ -27,12 +29,27 @@ class FoldersListViewModel @Inject constructor(
     private val _selectedProjectName = mutableStateOf("")
     val selectedProjectName: State<String> get() = _selectedProjectName
 
+    private val _currentArea = mutableStateOf("")
+    val currentArea: State<String> get() = _currentArea
+
+    fun onInit(areaId: Long): Boolean {
+        getAreaName(areaId)
+        getFolders(areaId, "")
+        return true
+    }
+
+    fun getAreaName(areaId: Long) {
+        viewModelScope.launch {
+            val resource = areasRepository.getAreaById(areaId)
+            if (resource is Resource.Success) {
+                _currentArea.value = resource.data?.name ?: ""
+            }
+        }
+    }
+
     // Modificación: recibir projectName directamente como parámetro
     fun getFolders(areaId: Long, projectName: String): Boolean {
         viewModelScope.launch {
-            // Usamos el projectName directamente
-            _selectedProjectName.value = projectName
-
             val resource = repository.getFoldersByAreaId(areaId)
             if (resource is Resource.Success) {
                 _folders.clear()

@@ -36,7 +36,6 @@ class AreasListViewModel @Inject constructor(
     fun getAreas(projectId: Long): Boolean {
         viewModelScope.launch {
             _selectedProjectId.value = projectId
-
             val projectResource = projectsRepository.getProjectById(projectId)
             if (projectResource is Resource.Success) {
                 _selectedProjectName.value = projectResource.data?.projectName ?: "Nombre desconocido"

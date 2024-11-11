@@ -13,6 +13,7 @@ import pe.edu.upc.diligencetech.communications.presentation.MessagesListFromProj
 import pe.edu.upc.diligencetech.communications.presentation.ProjectsListForCommunicationsScreen
 import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.AreasListScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.presentation.FilesListScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.DocumentsListScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.FoldersListScreen
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListScreen
@@ -20,10 +21,12 @@ import pe.edu.upc.diligencetech.iam.presentation.sing_in.SignInScreen
 import pe.edu.upc.diligencetech.iam.presentation.sing_up.SignUpScreen
 import pe.edu.upc.diligencetech.profiles.presentation.ProfileScreen
 import pe.edu.upc.diligencetech.settings.presentation.SettingsScreen
+import java.io.File
 import pe.edu.upc.diligencetech.settings.presentation.TermsAndConditionsScreen
 
 @Composable
-fun Home() {
+fun Home(
+) {
     val authenticationGuard = remember { AuthenticationGuard() }
     val navController = rememberNavController()
 
@@ -184,7 +187,32 @@ fun Home() {
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
-                onBackClick = { navController.navigate("areas/$projectId") }
+                onEnteringFolderClick = { folderId ->
+                    navController.navigate("files/$folderId")
+                },
+                onBackClick = { navController.popBackStack() } // Redirect to ProjectsListScreen
+            )
+        }
+        composable(
+            route = "files/{folderId}",
+            arguments = listOf(navArgument("folderId") {
+                type = NavType.LongType
+            })
+        ) { backStackEntry ->
+            val folderId = backStackEntry.arguments?.getLong("folderId") ?: return@composable
+
+            guard()
+            FilesListScreen (
+                folderId = folderId,
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                onEnteringFileClick = { fileId ->
+                    navController.navigate("file/$fileId")
+                                      },
+                onBackClick = { navController.popBackStack() },
             )
         }
 

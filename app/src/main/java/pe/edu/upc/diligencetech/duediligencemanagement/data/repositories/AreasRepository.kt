@@ -62,5 +62,20 @@ class AreasRepository(
             return@withContext Resource.Error("Error: ${e.message}")
         }
     }
-
+    suspend fun getAreaById(areaId: Long): Resource<Area> = withContext(Dispatchers.IO) {
+        try {
+            val response = areasService.getAreaById(areaId)
+            if (response.isSuccessful) {
+                val areaDto = response.body()
+                val area = areaDto?.toArea()
+                area?.let {
+                    return@withContext Resource.Success(area)
+                }
+                return@withContext Resource.Error("Something went wrong.")
+            }
+            return@withContext Resource.Error("Something went wrong.")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Something went wrong: ${e.message}")
+        }
+    }
 }

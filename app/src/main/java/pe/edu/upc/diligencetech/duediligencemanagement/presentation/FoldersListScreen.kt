@@ -66,6 +66,7 @@ fun FoldersListScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onEnteringFolderClick: (folderId: Long) -> Unit,
     onBackClick: () -> Unit
 ) {
     WorkbenchScreen(
@@ -79,11 +80,12 @@ fun FoldersListScreen(
         val folders = viewModel.folders
         val projectName by viewModel.selectedProjectName
         val foldersObtained by remember {
-            mutableStateOf(viewModel.getFolders(areaId, projectName))
+            mutableStateOf(viewModel.onInit(areaId))
         }
 
         var searchQuery by remember { mutableStateOf("") } // Variable para el buscador
         var showDialog by remember { mutableStateOf(false) }
+        val currentArea by viewModel.currentArea
         val totalStorage = 36
         val usedStorage = 10
 
@@ -232,7 +234,7 @@ fun FoldersListScreen(
                             .padding(start = 8.dp, bottom = 2.dp) // Espaciado opcional
                     )
                     Text(
-                        text = "Legal",
+                        text = currentArea,
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.Normal,
@@ -261,7 +263,11 @@ fun FoldersListScreen(
                 ) {
                     for (i in folders.indices) {
                         if (searchQuery.isEmpty() || folders[i].name.contains(searchQuery, ignoreCase = true)) {
-                            FolderCard(projectName = folders[i].name)
+                            FolderCard(
+                                projectName = folders[i].name,
+                            ) {
+                                onEnteringFolderClick(folders[i].id)
+                            }
                             Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
                     }
@@ -299,15 +305,16 @@ fun FoldersListScreen(
 @Composable
 fun FolderCard(
     projectName: String,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
-            .clickable {  },
+            .clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
-        elevation = CardDefaults.cardElevation(5.dp)
+        elevation = CardDefaults.cardElevation(5.dp),
     ) {
         Row(
             modifier = Modifier

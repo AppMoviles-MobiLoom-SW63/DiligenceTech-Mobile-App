@@ -48,4 +48,12 @@ interface AreasService {
     )
     @GET("areas/{projectId}")
     suspend fun getAreasByProjectId(@Path("projectId") projectId: Long): Response<List<AreaDto>>
+
+    @Headers(
+        value = [
+            "accept: application/json",
+        ]
+    )
+    @GET("areas/get-id/{areaId}")
+    suspend fun getAreaById(@Path("areaId") areaId: Long): Response<AreaDto>
 }
