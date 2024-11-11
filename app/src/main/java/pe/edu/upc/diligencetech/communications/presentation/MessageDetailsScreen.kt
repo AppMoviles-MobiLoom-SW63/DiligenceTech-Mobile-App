@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
@@ -48,6 +49,7 @@ fun MessageDetailsScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    navController: NavController,
     viewModel: MessagesViewModel = hiltViewModel()
 ) {
     val message by viewModel.getMessageById(messageId).collectAsState(initial = null)
@@ -98,7 +100,7 @@ fun MessageDetailsScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = message?.id.toString(),
+                    text = "Detalles del Mensaje",
                     style = TextStyle(
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,
@@ -130,18 +132,25 @@ fun MessageDetailsScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = message?.userId.toString(),
+                        text = "Para: ${message?.destinationUserId}",
                         color = Color.White,
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp
                     )
                     Text(
-                        text = message?.userId.toString(),
+                        text = "Asunto: ${message?.subject}",
                         color = Color.White,
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Normal,
                         fontSize = 12.sp
+                    )
+                    Text(
+                        text = "Fecha: ${message?.createdAt}",
+                        color = Color.White,
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 10.sp
                     )
                 }
 

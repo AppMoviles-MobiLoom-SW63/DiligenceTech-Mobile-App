@@ -5,5 +5,7 @@ data class Messages (
     val id: Long,
     val message: String,
     val projectId: Long,
-    val userId: Long
+    val userId: Long,
+    val destinationUserId: Long,
+    val subject: String
 )

@@ -60,4 +60,18 @@ class MessagesRepository @Inject constructor(
             return@withContext Resource.Error("Something went wrong: ${e.message}")
         }
     }
+
+    suspend fun createMessage(messageDto: MessageDto): Resource<Messages> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.createMessage(messageDto)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@withContext Resource.Success(it.toMessage())
+                }
+            }
+            return@withContext Resource.Error("Something went wrong")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Something went wrong: ${e.message}")
+        }
+    }
 }

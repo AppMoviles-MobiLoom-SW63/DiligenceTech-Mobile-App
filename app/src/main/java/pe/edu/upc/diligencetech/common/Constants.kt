@@ -1,6 +1,7 @@
 package pe.edu.upc.diligencetech.common
 
 import androidx.compose.ui.graphics.Color
+import pe.edu.upc.diligencetech.profiles.domain.User
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
