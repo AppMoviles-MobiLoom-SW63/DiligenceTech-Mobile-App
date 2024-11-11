@@ -13,7 +13,11 @@ data class MessageDto(
     @SerializedName("projectId")
     val projectId: Long,
     @SerializedName("userId")
-    val userId: Long
+    val userId: Long,
+    @SerializedName("destinationUserId")
+    val destinationUserId: Long,
+    @SerializedName("subject")
+    val subject: String
 )
 
-fun MessageDto.toMessage() = Messages(createdAt, id, message, projectId, userId)
+fun MessageDto.toMessage() = Messages(createdAt, id, message, projectId, userId, destinationUserId, subject)
