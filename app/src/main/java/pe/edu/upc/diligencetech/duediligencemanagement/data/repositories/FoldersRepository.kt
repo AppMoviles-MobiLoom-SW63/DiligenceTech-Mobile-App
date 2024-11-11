@@ -43,4 +43,20 @@ class FoldersRepository(
             return@withContext Resource.Error("Something went wrong: ${e.message}")
         }
     }
+
+    suspend fun getFolderById(folderId: Long): Resource<Folder>
+    = withContext(Dispatchers.IO) {
+        try {
+            val response = foldersService.getFolderById(folderId)
+            if (response.isSuccessful) {
+                val folderDto = response.body()
+                folderDto?.let {
+                    return@withContext Resource.Success(it.toFolder())
+                }
+            }
+            return@withContext Resource.Error("Something went wrong")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Something went wrong: ${e.message}")
+        }
+    }
 }

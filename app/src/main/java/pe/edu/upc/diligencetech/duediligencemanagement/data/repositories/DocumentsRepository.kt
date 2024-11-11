@@ -8,7 +8,7 @@ import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.toDocume
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.DocumentResource
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.Document
 
-class DocumentsRepository(
+class DocumentsRepository (
     private val documentsService: DocumentsService
 ) {
     suspend fun getDocumentsByFolderId(folderId: Long): Resource<List<Document>>

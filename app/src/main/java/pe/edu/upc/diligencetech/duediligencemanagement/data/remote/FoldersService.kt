@@ -46,4 +46,11 @@ interface FoldersService {
     @GET("folders/{areaId}")
     suspend fun getFoldersByAreaId(@Path("areaId") areaId: Long): Response<List<FolderDto>>
 
+    @Headers(
+        value = [
+            "accept: application/json",
+        ]
+    )
+    @GET("folders/get-id/{folderId}")
+    suspend fun getFolderById(@Path("folderId") folderId: Long): Response<FolderDto>
 }

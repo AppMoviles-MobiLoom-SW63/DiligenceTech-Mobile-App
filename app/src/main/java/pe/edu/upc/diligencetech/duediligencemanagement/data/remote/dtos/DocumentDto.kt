@@ -14,4 +14,4 @@ data class DocumentDto(
     val id: Long
 )
 
-fun DocumentDto.toDocument() = Document(filename, fileUrl)
+fun DocumentDto.toDocument() = Document(id, filename, fileUrl)

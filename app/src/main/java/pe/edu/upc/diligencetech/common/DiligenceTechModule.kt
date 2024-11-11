@@ -9,9 +9,11 @@ import okhttp3.OkHttpClient
 import pe.edu.upc.diligencetech.communications.data.remote.MessagesService
 import pe.edu.upc.diligencetech.communications.data.repositories.MessagesRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.DocumentsService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.DueDiligenceProjectsService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.FoldersService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.AreasRepository
+import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DocumentsRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDiligenceProjectsRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.FoldersRepository
 import pe.edu.upc.diligencetech.iam.data.remote.AuthenticationService
@@ -94,6 +96,14 @@ object DiligenceTechModule {
 
     @Provides
     @Singleton
+    fun provideDocumentsService(
+        retrofit: Retrofit
+    ): DocumentsService {
+        return retrofit.create(DocumentsService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthenticationRepository(authenticationService: AuthenticationService): AuthenticationRepository {
         return AuthenticationRepository(authenticationService)
     }
@@ -120,5 +130,11 @@ object DiligenceTechModule {
     @Singleton
     fun provideMessagesRepository(messagesService: MessagesService): MessagesRepository {
         return MessagesRepository(messagesService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDocumentsRepository(documentsService: DocumentsService): DocumentsRepository {
+        return DocumentsRepository(documentsService)
     }
 }

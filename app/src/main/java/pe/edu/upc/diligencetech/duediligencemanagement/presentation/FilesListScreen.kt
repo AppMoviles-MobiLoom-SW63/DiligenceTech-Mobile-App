@@ -1,5 +1,10 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.presentation
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,50 +29,47 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
-import pe.edu.upc.diligencetech.duediligencemanagement.domain.Area
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AreasListScreen(
-    viewModel: AreasListViewModel = hiltViewModel(),
-    projectId: Long = 0,
+fun FilesListScreen(
+    viewModel: FilesListViewModel = hiltViewModel(),
+    folderId: Long = 0,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onEnteringAreaClick: (areaId: Long) -> Unit,
+    onEnteringFileClick: (areaId: Long) -> Unit,
     onBackClick: () -> Unit,
 ) {
     WorkbenchScreen(
@@ -78,20 +80,34 @@ fun AreasListScreen(
         onSettingsClick = onSettingsClick,
         myOption = "Proyectos"
     ) {
+        val context = LocalContext.current
+        val fileUris = viewModel.fileUris
+
+        // Launcher to pick files
+        val filePickerLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetMultipleContents(),
+            onResult = { uris ->
+                fileUris.clear()
+                fileUris.addAll(uris)
+            }
+        )
+
         // variables
-        val areas = viewModel.areas
+        val files = viewModel.files
+        val projectName by viewModel.selectedProjectName
+        val foldersObtained by remember {
+            mutableStateOf(viewModel.onInit(folderId, projectName))
+        }
+        val folderName by viewModel.selectedFolderName
         var searchQuery by remember { mutableStateOf("") } // Variable para el buscador
-        var areaToEdit by remember { mutableStateOf<Area?>(null) }
         var showDialog by remember { mutableStateOf(false) }
         val totalStorage = 36
         val usedStorage = 10
-        val areasCreated by remember { mutableStateOf(viewModel.getAreas(projectId)) }
+        val cachedFiles: File? = null
         // content
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFF1A1A1A)),
+            Column (
+                modifier = Modifier.fillMaxSize().background(Color(0xFF1A1A1A)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
@@ -116,10 +132,11 @@ fun AreasListScreen(
                         )
                     }
 
+
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Text(
-                        text = viewModel.selectedProjectName.value,
+                        text = projectName,
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.SemiBold,
@@ -130,12 +147,8 @@ fun AreasListScreen(
                             .padding(vertical = 16.dp)
                     )
                 }
-
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF282828))
-                        .padding(top = 16.dp, bottom = 16.dp),
+                    modifier = Modifier.fillMaxWidth().background(Color(0xFF282828)).padding(top = 16.dp, bottom = 16.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -158,7 +171,7 @@ fun AreasListScreen(
                             unfocusedLabelColor = Color.Transparent,
                             cursorColor = Color(0xFF626262),
 
-                        ),
+                            ),
                         shape = RoundedCornerShape(8.dp),
                         textStyle = TextStyle(fontFamily = Montserrat, color = Color(0xFF626262), fontSize = 14.sp), // Estilo del texto ingresado
                         modifier = Modifier
@@ -224,15 +237,15 @@ fun AreasListScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.all_areas_icon),
-                        contentDescription = "Ícono de áreas",
+                        painter = painterResource(id = R.drawable.areas_icon),
+                        contentDescription = "Ícono de folders",
                         tint = Color.White,
                         modifier = Modifier
                             .size(32.dp)
                             .padding(start = 8.dp, bottom = 2.dp) // Espaciado opcional
                     )
                     Text(
-                        text = "Todas las áreas",
+                        text = folderName,
                         style = TextStyle(
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.Normal,
@@ -259,10 +272,12 @@ fun AreasListScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (i in areas.indices) {
-                        if (searchQuery.isEmpty() || areas[i].name.contains(searchQuery, ignoreCase = true)) {
-                            AreaCard(projectName = areas[i].name) {
-                                onEnteringAreaClick(areas[i].id)
+                    for (i in files.indices) {
+                        if (searchQuery.isEmpty() || files[i].filename.contains(searchQuery, ignoreCase = true)) {
+                            FileCard(
+                                fileName = files[i].filename,
+                            ) {
+                                onEnteringFileClick(files[i].id)
                             }
                             Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
@@ -270,11 +285,15 @@ fun AreasListScreen(
                 }
 
                 if (showDialog) {
-                    AreaInputDialog(
+                    FileInputDialog (
+                        fileUris = fileUris,
                         onDismiss = { showDialog = false },
                         onAddProject = {
-                            viewModel.addArea(projectId)
                             showDialog = false
+                            viewModel.addFile(folderId)
+                        },
+                        onAddFiles = {
+                            filePickerLauncher.launch("*/*")
                         }
                     )
                 }
@@ -299,70 +318,41 @@ fun AreasListScreen(
 }
 
 @Composable
-fun AreaCard(
-    projectName: String,
+fun FileCard(
+    fileName: String,
     onClick: () -> Unit
 ) {
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(55.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
-        elevation = CardDefaults.cardElevation(5.dp)
+            .height(60.dp)
+            .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
+            .clickable { onClick() }
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically, // Centra el contenido verticalmente en la fila
-            horizontalArrangement = Arrangement.SpaceBetween // Coloca elementos espaciados
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start// Para que los elementos internos estén alineados
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.areas_icon), // Reemplaza con tu ícono
-                    contentDescription = "Ícono de áreas",
-                    tint = Color(0xFFD6773D),
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(start = 8.dp, end = 8.dp) // Agrega un espaciado entre el ícono y el checkbox/texto
-                )
-
-                Text(
-                    text = projectName,
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
-            Icon(
-                painter = painterResource(id = R.drawable.edit_icon), // Reemplaza con tu ícono de lápiz
-                contentDescription = "Editar",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable { }
+        Text(
+            text = fileName,
+            style = TextStyle(
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                color = Color.White,
+                fontSize = 16.sp
             )
-        }
+        )
     }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AreaInputDialog(
-    viewModel: AreasListViewModel = hiltViewModel(),
+fun FileInputDialog(
+    viewModel: FilesListViewModel = hiltViewModel(),
+    fileUris: List<Uri>,
     onDismiss: () -> Unit,
-    onAddProject: () -> Unit
+    onAddProject: () -> Unit,
+    onAddFiles: () -> Unit
 ) {
-    val newArea = viewModel.newArea
+    val newFolder = viewModel.newFile
 
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -372,7 +362,7 @@ fun AreaInputDialog(
         ) {
             Column {
                 Text(
-                    text = "Crear nueva área",
+                    text = "Agregar Archivos",
                     style = TextStyle(
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,
@@ -390,25 +380,51 @@ fun AreaInputDialog(
                 )
                 Spacer(modifier = Modifier.height(25.dp))
 
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = {
+                            onAddFiles()
+                        }
+                    ) {
+                        Text(
+                            text = "Seleccionar archivo(s)",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(25.dp))
 
-                OutlinedTextField(
-                    value = newArea.value,
-                    onValueChange = {
-                        viewModel.onNewAreaChange(it)
-                    },
-                    label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese nombre", fontFamily = Montserrat, color = Color.Gray) },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = Color(0xFFD6773D),
-                        unfocusedLabelColor = Color(0xFFD6773D),
-                        cursorColor = Color(0xFFD6773D),
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    textStyle = TextStyle(
-                        color = Color.White,
-                        fontFamily = Montserrat
-                    )
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    for (i in fileUris.indices) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.folders_icon),
+                            contentDescription = "Documento",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(12.dp)
+                        )
+                        Text(
+                            text = fileUris[i].path.toString(),
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Normal,
+                                color = Color.White,
+                                fontSize = 14.sp
+                            )
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(46.dp))
 
                 Row(
@@ -456,58 +472,6 @@ fun AreaInputDialog(
                                 fontSize = 16.sp
                             )
                         )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun EditAreaDialog(
-    currentAreaName: String,
-    onDismiss: () -> Unit,
-    onSave: (String) -> Unit
-) {
-    var areaName by remember { mutableStateOf(currentAreaName) }
-
-    Dialog(onDismissRequest = { onDismiss() }) {
-        Box(
-            modifier = Modifier
-                .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
-                .padding(25.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text("Editar Área")
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = areaName,
-                    onValueChange = { areaName = it },
-                    label = { Text("Nombre del Área") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(onClick = {
-                        onSave(areaName)
-                        onDismiss()
-                    }) {
-                        Text("Guardar")
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Button(onClick = onDismiss) {
-                        Text("Cancelar")
                     }
                 }
             }
