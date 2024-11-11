@@ -269,8 +269,7 @@ fun MessageCard(
             .padding(bottom = 10.dp)
             .fillMaxWidth()
             .height(75.dp)
-            .clickable {  },
-        onClick = onClick,
+            .clickable { onClick() },
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
         elevation = CardDefaults.cardElevation(5.dp)

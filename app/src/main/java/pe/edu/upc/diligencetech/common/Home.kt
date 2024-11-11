@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import pe.edu.upc.diligencetech.communications.presentation.MessageDetailsScreen
 import pe.edu.upc.diligencetech.communications.presentation.MessagesListFromProjectScreen
 import pe.edu.upc.diligencetech.communications.presentation.ProjectsListForCommunicationsScreen
 import pe.edu.upc.diligencetech.dashboard.presentation.DashboardScreen
@@ -202,6 +203,26 @@ fun Home() {
                 projectId = projectId,
                 userId = userId,
                 destinationUserId = destinationUserId,
+                onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
+                onProjectsClick = { clearBackStackAndNavigateTo("projects") },
+                onMessagesClick = { clearBackStackAndNavigateTo("messages") },
+                onProfileClick = { clearBackStackAndNavigateTo("profile") },
+                onSettingsClick = { clearBackStackAndNavigateTo("settings") },
+                navController = navController
+            )
+        }
+
+        composable(
+            route = "messageDetailsScreen/{messageId}",
+            arguments = listOf(navArgument("messageId") {
+                type = NavType.LongType
+            })
+        ) { backStackEntry ->
+            val messageId = backStackEntry.arguments?.getLong("messageId") ?: return@composable
+
+            guard()
+            MessageDetailsScreen(
+                messageId = messageId,
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
