@@ -58,6 +58,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
+import pe.edu.upc.diligencetech.communications.data.remote.dtos.MessageDto
 import pe.edu.upc.diligencetech.communications.domain.Messages
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectInputDialog
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListViewModel
@@ -66,6 +67,8 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 @Composable
 fun MessagesListFromProjectScreen(
     projectId: Long,
+    userId: Long,
+    destinationUserId: Long,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
@@ -204,8 +207,8 @@ fun MessagesListFromProjectScreen(
             ){
                 messages.forEach { message ->
                     MessageCard(
-                        contactName = message.createdAt,
-                        messageTitle = message.message,
+                        contactName = message.userId.toString(),
+                        messageTitle = message.subject,
                         onClick = {
                             navController.navigate("messageDetailsScreen/${message.id}")
                         }
@@ -220,9 +223,13 @@ fun MessagesListFromProjectScreen(
                     onDismiss = {
                         showDialog = false
                     },
-                    onAddMessage = {
+                    onAddMessage = { messageDto ->
+                        viewModel.createMessage(messageDto)
                         showDialog = false
-                    }
+                    },
+                    projectId = projectId,
+                    userId = userId,
+                    destinationUserId = destinationUserId
                 )
             }
             Box(
@@ -312,7 +319,10 @@ fun MessageCard(
 @Composable
 fun MessageInput(
     onDismiss: () -> Unit,
-    onAddMessage: () -> Unit
+    onAddMessage: (MessageDto) -> Unit,
+    projectId: Long,
+    userId: Long,
+    destinationUserId: Long
 ) {
     val contactName = remember { mutableStateOf("") }
     val messageTitle = remember { mutableStateOf("") }
@@ -434,7 +444,18 @@ fun MessageInput(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Button(
-                        onClick = onAddMessage,
+                        onClick = {
+                            val messageDto = MessageDto(
+                                id = 0L,
+                                userId = userId,
+                                destinationUserId = destinationUserId,
+                                projectId = projectId,
+                                subject = messageTitle.value,
+                                message = messageText.value,
+                                createdAt = System.currentTimeMillis().toString()
+                            )
+                            onAddMessage(messageDto)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFD6773D),
                             contentColor = Color.White
