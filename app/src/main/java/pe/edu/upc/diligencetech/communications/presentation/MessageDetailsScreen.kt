@@ -80,14 +80,14 @@ fun MessageDetailsScreen(
                     modifier = Modifier
                         .size(48.dp)
                         .background(Color(0xFF282828), shape = CircleShape)
-                        .clickable {},
+                        .clickable { navController.popBackStack() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.back_icon),
                         contentDescription = "Back",
                         tint = Color.White,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             }

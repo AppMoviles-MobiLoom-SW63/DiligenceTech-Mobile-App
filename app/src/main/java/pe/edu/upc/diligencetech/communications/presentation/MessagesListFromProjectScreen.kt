@@ -57,8 +57,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.R
+import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.communications.data.remote.dtos.MessageDto
+import pe.edu.upc.diligencetech.communications.data.remote.resources.MessageResource
 import pe.edu.upc.diligencetech.communications.domain.Messages
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectInputDialog
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListViewModel
@@ -67,8 +69,6 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 @Composable
 fun MessagesListFromProjectScreen(
     projectId: Long,
-    userId: Long,
-    destinationUserId: Long,
     onHomeClick: () -> Unit,
     onProjectsClick: () -> Unit,
     onMessagesClick: () -> Unit,
@@ -114,7 +114,7 @@ fun MessagesListFromProjectScreen(
                     modifier = Modifier
                         .size(48.dp)
                         .background(Color(0xFF282828), shape = CircleShape)
-                        .clickable {},
+                        .clickable { navController.popBackStack() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -228,8 +228,7 @@ fun MessagesListFromProjectScreen(
                         showDialog = false
                     },
                     projectId = projectId,
-                    userId = userId,
-                    destinationUserId = destinationUserId
+                    userId = Constants.id ?: 0L
                 )
             }
             Box(
@@ -318,10 +317,9 @@ fun MessageCard(
 @Composable
 fun MessageInput(
     onDismiss: () -> Unit,
-    onAddMessage: (MessageDto) -> Unit,
+    onAddMessage: (MessageResource) -> Unit,
     projectId: Long,
     userId: Long,
-    destinationUserId: Long
 ) {
     val contactName = remember { mutableStateOf("") }
     val messageTitle = remember { mutableStateOf("") }
@@ -444,14 +442,12 @@ fun MessageInput(
 
                     Button(
                         onClick = {
-                            val messageDto = MessageDto(
-                                id = 0L,
+                            val messageDto = MessageResource(
                                 userId = userId,
-                                destinationUserId = destinationUserId,
+                                destinationUsername = contactName.value,
                                 projectId = projectId,
                                 subject = messageTitle.value,
-                                message = messageText.value,
-                                createdAt = System.currentTimeMillis().toString()
+                                message = messageText.value
                             )
                             onAddMessage(messageDto)
                         },

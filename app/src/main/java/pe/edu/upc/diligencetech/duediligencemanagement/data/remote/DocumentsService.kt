@@ -44,7 +44,7 @@ interface DocumentsService {
         ]
     )
     @POST("Documents")
-    suspend fun createDocument(@Body documentResource: DocumentResource): Call<DocumentDto?>
+    suspend fun createDocument(@Body documentResource: DocumentResource): Response<DocumentDto?>
 
     @Headers(
         value = [
@@ -53,8 +53,6 @@ interface DocumentsService {
     )
     @GET("Documents/{folderId}")
     suspend fun getDocumentsByFolderId(@Path("folderId") folderId: Long): Response<List<DocumentDto>>
-
-
 
 
 }

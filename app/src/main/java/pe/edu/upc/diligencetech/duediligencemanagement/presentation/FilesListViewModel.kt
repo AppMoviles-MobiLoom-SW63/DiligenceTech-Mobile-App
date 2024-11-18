@@ -91,28 +91,29 @@ class FilesListViewModel @Inject constructor(
         val downloadUrls = mutableListOf<Uri>()
         fileUris.forEach { uri ->
             try {
+                // Firebase
                 val storageRefChild = storageRef.child("${folderId}/${uri.lastPathSegment}")
                 storageRefChild.putFile(uri).await()
-                val downloadUrl = storageRef.downloadUrl.await()
+                val downloadUrl = storageRefChild.downloadUrl.await()
                 Log.d("FilesListViewModel", "Download URL: $downloadUrl")
-                downloadUrls.add(downloadUrl)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        downloadUrls.forEach { uri ->
-            try {
-                val resource = repository.createDocument(DocumentResource(
-                    folderId = folderId,
-                    filename = uri.lastPathSegment ?: "",
-                    fileUrl = uri.toString()
-                ))
-                if (resource is Resource.Success) {
-                    Log.d("FilesListViewModel", "Document added successfully")
-                } else {
-                    Log.d("FilesListViewModel", "Error adding document")
+                // Backend
+                try {
+                    val documentResource = DocumentResource(
+                        folderId = folderId,
+                        filename = downloadUrl.lastPathSegment ?: "unknown",
+                        fileUrl = downloadUrl.toString()
+                    )
+                    Log.d("FilesListViewModel", "Resource: $documentResource")
+                    val resource = repository.createDocument(documentResource)
+                    if (resource is Resource.Success) {
+                        Log.d("FilesListViewModel", "Document added successfully")
+                    } else {
+                        Log.d("FilesListViewModel", "Error adding document")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }

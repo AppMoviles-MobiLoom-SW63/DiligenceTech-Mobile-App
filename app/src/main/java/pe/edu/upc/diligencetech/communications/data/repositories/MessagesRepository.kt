@@ -7,6 +7,7 @@ import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.communications.data.remote.MessagesService
 import pe.edu.upc.diligencetech.communications.data.remote.dtos.MessageDto
 import pe.edu.upc.diligencetech.communications.data.remote.dtos.toMessage
+import pe.edu.upc.diligencetech.communications.data.remote.resources.MessageResource
 import pe.edu.upc.diligencetech.communications.domain.Messages
 import retrofit2.Response
 import javax.inject.Inject
@@ -61,7 +62,7 @@ class MessagesRepository @Inject constructor(
         }
     }
 
-    suspend fun createMessage(messageDto: MessageDto): Resource<Messages> = withContext(Dispatchers.IO) {
+    suspend fun createMessage(messageDto: MessageResource): Resource<Messages> = withContext(Dispatchers.IO) {
         try {
             val response = service.createMessage(messageDto)
             if (response.isSuccessful) {

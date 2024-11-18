@@ -25,7 +25,7 @@ interface MessagesService {
         ]
     )
     @POST("messages")
-    suspend fun createMessage(@Body messageDto: MessageDto): Response<MessageDto?>
+    suspend fun createMessage(@Body messageDto: MessageResource): Response<MessageDto?>
 
     @Headers(
         value = [

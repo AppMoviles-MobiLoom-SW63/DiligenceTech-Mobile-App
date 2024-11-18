@@ -61,6 +61,8 @@ import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
+// VERSION ANTIGUA DE FilesListScreen
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocumentsListScreen(

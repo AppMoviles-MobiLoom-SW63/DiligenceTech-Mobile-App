@@ -33,7 +33,7 @@ class DocumentsRepository (
     suspend fun createDocument(documentResource: DocumentResource): Resource<List<Document>>
     = withContext(Dispatchers.IO) {
         try {
-            val response = documentsService.createDocument(documentResource).execute()
+            val response = documentsService.createDocument(documentResource)
             if (response.isSuccessful) {
                 val resource = getDocumentsByFolderId(documentResource.folderId)
                 resource.data?.let {

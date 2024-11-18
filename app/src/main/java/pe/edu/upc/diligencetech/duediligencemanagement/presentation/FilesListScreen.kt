@@ -69,7 +69,6 @@ fun FilesListScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onEnteringFileClick: (areaId: Long) -> Unit,
     onBackClick: () -> Unit,
 ) {
     WorkbenchScreen(
@@ -277,7 +276,8 @@ fun FilesListScreen(
                             FileCard(
                                 fileName = files[i].filename,
                             ) {
-                                onEnteringFileClick(files[i].id)
+                                val webLauncher = Intent(Intent.ACTION_VIEW, Uri.parse(files[i].fileUrl))
+                                context.startActivity(webLauncher)
                             }
                             Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
@@ -342,6 +342,8 @@ fun FileCard(
         )
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

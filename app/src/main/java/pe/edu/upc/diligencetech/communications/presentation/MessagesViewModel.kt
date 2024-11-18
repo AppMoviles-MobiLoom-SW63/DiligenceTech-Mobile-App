@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.communications.data.remote.dtos.MessageDto
+import pe.edu.upc.diligencetech.communications.data.remote.resources.MessageResource
 import pe.edu.upc.diligencetech.communications.data.repositories.MessagesRepository
 import pe.edu.upc.diligencetech.communications.domain.Messages
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class MessagesViewModel @Inject constructor(
         }
     }
 
-    fun createMessage(messageDto: MessageDto) {
+    fun createMessage(messageDto: MessageResource) {
         viewModelScope.launch {
             when (val result = repository.createMessage(messageDto)) {
                 is Resource.Success -> {

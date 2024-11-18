@@ -209,9 +209,6 @@ fun Home(
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },
                 onProfileClick = { clearBackStackAndNavigateTo("profile") },
                 onSettingsClick = { clearBackStackAndNavigateTo("settings") },
-                onEnteringFileClick = { fileId ->
-                    navController.navigate("file/$fileId")
-                                      },
                 onBackClick = { navController.popBackStack() },
             )
         }
@@ -223,14 +220,9 @@ fun Home(
             })
         ) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getLong("projectId") ?: return@composable
-            val userId = backStackEntry.arguments?.getLong("userId") ?: return@composable
-            val destinationUserId = backStackEntry.arguments?.getLong("destinationUserId") ?: return@composable
-
             guard()
             MessagesListFromProjectScreen(
                 projectId = projectId,
-                userId = userId,
-                destinationUserId = destinationUserId,
                 onHomeClick = { clearBackStackAndNavigateTo("dashboard") },
                 onProjectsClick = { clearBackStackAndNavigateTo("projects") },
                 onMessagesClick = { clearBackStackAndNavigateTo("messages") },

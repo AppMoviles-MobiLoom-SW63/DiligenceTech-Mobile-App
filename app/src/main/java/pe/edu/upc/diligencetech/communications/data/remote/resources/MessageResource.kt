@@ -9,8 +9,8 @@ data class MessageResource(
     val projectId: Long,
     @SerializedName("userId")
     val userId: Long,
-    @SerializedName("destinationUserId")
-    val destinationUserId: Long,
+    @SerializedName("destinationUsername")
+    val destinationUsername: String,
     @SerializedName("subject")
     val subject: String
 )
