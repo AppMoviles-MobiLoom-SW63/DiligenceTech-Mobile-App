@@ -51,6 +51,11 @@ class MessagesViewModel @Inject constructor(
     fun getMessageById(messageId: Long) = flow {
         val resource = repository.getMessageById(messageId)
         if (resource is Resource.Success) {
+            val resource2 = userRepository.getUserById(resource.data?.userId ?: 0)
+            if (resource2 is Resource.Success) {
+                val user = resource2.data?.email ?: ""
+                _userMessages.value = _userMessages.value + user
+            }
             emit(resource.data)
         } else {
             emit(null)

@@ -53,6 +53,7 @@ fun MessageDetailsScreen(
     viewModel: MessagesViewModel = hiltViewModel()
 ) {
     val message by viewModel.getMessageById(messageId).collectAsState(initial = null)
+    val userMessages by viewModel.userMessages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -132,7 +133,11 @@ fun MessageDetailsScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "Para: ${message?.destinationUserId}",
+                        text = try {
+                            "De: " + userMessages[0]
+                            } catch (e: Exception) {
+                            "De: " + message?.userId.toString()
+                        },
                         color = Color.White,
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Bold,
