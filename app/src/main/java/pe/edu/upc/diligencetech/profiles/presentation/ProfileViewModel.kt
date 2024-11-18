@@ -26,7 +26,7 @@ class ProfileViewModel @Inject constructor(
     private fun fetchUserData() {
         viewModelScope.launch {
             try {
-                _user.value = repository.getUserById(Constants.id!!.toInt()).data
+                _user.value = repository.getUserById(Constants.id!!).data
                 Log.d("ProfileViewModel", "User data fetched successfully: ${_user.value}")
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error fetching user data", e)

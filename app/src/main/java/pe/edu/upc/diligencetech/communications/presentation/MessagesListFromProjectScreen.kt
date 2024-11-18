@@ -88,6 +88,7 @@ fun MessagesListFromProjectScreen(
     }
 
     val messages by viewModel.messages.collectAsState()
+    val userMessages by viewModel.userMessages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -205,9 +206,13 @@ fun MessagesListFromProjectScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                messages.forEach { message ->
+                messages.forEachIndexed { index, message ->
                     MessageCard(
-                        contactName = message.userId.toString(),
+                        contactName = try {
+                            "De: " + userMessages[index]
+                        } catch (e: Exception) {
+                            "De: " + message.userId.toString()
+                        },
                         messageTitle = message.subject,
                         onClick = {
                             navController.navigate("messageDetailsScreen/${message.id}")
