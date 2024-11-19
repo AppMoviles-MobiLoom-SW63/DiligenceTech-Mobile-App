@@ -8,6 +8,8 @@ import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.DueDiligenceProjectsService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.toProject
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.DueDiligenceProjectResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditFolderResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditProjectResource
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.DueDiligenceProject
 
 class DueDiligenceProjectsRepository(
@@ -49,6 +51,7 @@ class DueDiligenceProjectsRepository(
         }
     }
 
+
     suspend fun getDueDiligenceProjectsByUsername(): Resource<List<DueDiligenceProject>>
             = withContext(Dispatchers.IO) {
         try {
@@ -89,6 +92,19 @@ class DueDiligenceProjectsRepository(
             return@withContext Resource.Error("Project not found")
         } catch (e: Exception) {
             return@withContext Resource.Error("Something went wrong: ${e.message}")
+        }
+    }
+
+    suspend fun editProjectActive(projectId: Long, editProjectResource: EditProjectResource):
+            Resource<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val response = service.editActiveProject(projectId, editProjectResource)
+            if (response.isSuccessful) {
+                return@withContext Resource.Success(Unit) // Edición exitosa
+            }
+            return@withContext Resource.Error("Error al editar el estado del Proyecto. Código: ${response.code()}")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Error: ${e.message}")
         }
     }
 }

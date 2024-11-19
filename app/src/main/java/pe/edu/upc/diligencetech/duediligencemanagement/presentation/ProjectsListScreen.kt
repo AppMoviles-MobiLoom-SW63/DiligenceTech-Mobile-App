@@ -54,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.Constants
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
+import pe.edu.upc.diligencetech.duediligencemanagement.domain.DueDiligenceProject
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
 @Composable
@@ -86,6 +87,8 @@ fun ProjectsListScreen(
         val test = remember { mutableStateListOf<String>() }
 
         var showDialog by remember { mutableStateOf(false) }
+        var showChangeDialog by remember { mutableStateOf(false) }
+        var selectedProjectId by remember { mutableStateOf<Long?>(null) }
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -150,25 +153,42 @@ fun ProjectsListScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             ProjectCard(
-                                projectName = projects[i].projectName,
-                                projectType = "",
-                                projectNumber = i + 1
-                            ) {
-                                onEnteringProjectClick(projects[i].id)
-                            }
+                                project = projects[i],
+                                projectNumber = i + 1,
+                                onClick = { onEnteringProjectClick(projects[i].id) },
+                                onChangeActiveStatus = { projectId, active ->
+                                    // Mostrar el dialog para confirmar el cambio de estado
+                                    selectedProjectId = projectId
+                                    showChangeDialog = true
+                                }
+                            )
                             if (i + 1 < projects.size) {
                                 ProjectCard(
-                                    projectName = projects[i + 1].projectName,
-                                    projectType = "",
-                                    projectNumber = i + 2
-                                ) {
-                                    onEnteringProjectClick(projects[i + 1].id)
-                                }
+                                    project = projects[i + 1],
+                                    projectNumber = i + 2,
+                                    onClick = { onEnteringProjectClick(projects[i + 1].id) },
+                                    onChangeActiveStatus = { projectId, active ->
+                                        selectedProjectId = projectId
+                                        showChangeDialog = true
+                                    }
+                                )
                             } else {
                                 Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
+                }
+                if (showChangeDialog && selectedProjectId != null) {
+                    ConfirmChangeDialog(
+                        projectId = selectedProjectId!!,
+                        onConfirm = {
+                            viewModel.editProjectActive(selectedProjectId!!, active = true)
+                            showChangeDialog = false
+                        },
+                        onDismiss = {
+                            showChangeDialog = false
+                        }
+                    )
                 }
 
                 if (showDialog) {
@@ -206,22 +226,99 @@ fun ProjectsListScreen(
     }
 }
 
+@Composable
+fun ConfirmChangeDialog(
+    projectId: Long,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
+                .padding(30.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Cambiar estado",
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        fontSize = 17.sp
+                    )
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "¿Deseas marcar este proyecto como completado? Esta acción no se puede deshacer.",
+                    color = Color.White,
+                    fontFamily = Montserrat,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.height(25.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            onDismiss()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color(0xFFD6773D)
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text("Cancelar", fontFamily = Montserrat)
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Button(
+                        onClick = {
+                            onConfirm()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD6773D),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text("Confirmar", fontFamily = Montserrat)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ProjectCard(
-    projectName: String,
-    projectType: String,
+    project: DueDiligenceProject,
     projectNumber: Int,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onChangeActiveStatus: (Long, Boolean) -> Unit
 ) {
+    val cardColor = if (project.active) Color(0xFFD6773D) else Color(0xFF282828) // Naranja claro si está completado
+    val isCompleted = project.active // Verificar si está completado
+
     Card(
         modifier = Modifier
             .width(180.dp)
             .height(180.dp)
-            .clickable { },
-        onClick = onClick,
+            .clickable(enabled = !isCompleted) { // Deshabilitar clic si está completado
+                onClick()
+            },
         shape = RoundedCornerShape(30.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF282828)),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
         Column(
@@ -232,21 +329,36 @@ fun ProjectCard(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                // Texto alineado a la izquierda
                 Text(
                     text = "$projectNumber.",
-                    color = Color.White,
+                    color = if (isCompleted) Color(0xFF282828) else Color.White,
                     fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                // Ícono alineado a la derecha
+                Icon(
+                    painter = painterResource(id = R.drawable.active_menu_icon),
+                    contentDescription = "Active Menu",
+                    tint = if (isCompleted) Color(0xFF282828) else Color.White, // Cambiar color del ícono
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clickable(enabled = !isCompleted) {
+                            onChangeActiveStatus(project.id, true)
+                        }
                 )
             }
 
             Icon(
                 painter = painterResource(id = R.drawable.project_icon),
                 contentDescription = "Folder",
-                tint = Color(0xFFD6773D),
+                tint = Color(0xFF282828),
                 modifier = Modifier.size(64.dp)
             )
 
@@ -254,15 +366,15 @@ fun ProjectCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = projectName,
-                    color = Color.White,
+                    text = project.projectName,
+                    color = if (isCompleted) Color(0xFF282828) else Color.White,
                     fontSize = 14.sp,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = projectType,
-                    color = Color(0xFFD6773D),
+                    text = if (project.active) "Completado" else "No Completado",
+                    color = if (isCompleted) Color.White else Color(0xFFD6773D),
                     fontFamily = Montserrat,
                     fontSize = 12.sp
                 )

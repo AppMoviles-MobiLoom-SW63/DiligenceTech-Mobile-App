@@ -8,5 +8,7 @@ data class DueDiligenceProjectResource(
     @SerializedName("agentsUsernames")
     val agentsUsernames: List<String>,
     @SerializedName("name")
-    val name: String
+    val name: String,
+    @SerializedName("active")
+    val active: Boolean,
 )
