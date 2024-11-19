@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
+import pe.edu.upc.diligencetech.dashboard.presentation.DashboardViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,7 +40,8 @@ fun ProfileScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: DashboardViewModel = hiltViewModel()
 ) = WorkbenchScreen(
     onHomeClick = onHomeClick,
     onProjectsClick = onProjectsClick,
@@ -50,6 +53,8 @@ fun ProfileScreen(
 
     val user = profileViewModel.user.collectAsState().value
     val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
+
+    val projectCount by viewModel.projectCount.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -164,7 +169,7 @@ fun ProfileScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "2",
+                                    text = projectCount.toString(),
                                     color = Color.White,
                                     fontSize = 25.sp,
                                     fontWeight = FontWeight.Bold,
