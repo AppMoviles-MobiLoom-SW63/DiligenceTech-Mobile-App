@@ -284,7 +284,7 @@ fun MessageCard(
     messageTitle: String,
     onClick: () -> Unit
 ) {
-    val backgroundColor = pe.edu.upc.diligencetech.profiles.presentation.getRandomColor()
+    val backgroundColor = getRandomColor()
 
     Card(
         modifier = Modifier

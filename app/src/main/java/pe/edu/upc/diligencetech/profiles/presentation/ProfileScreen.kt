@@ -32,16 +32,7 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
-fun getRandomColor(): Color {
-    val random = Random.Default
-    return Color(
-        red = random.nextInt(256),
-        green = random.nextInt(256),
-        blue = random.nextInt(256)
-    )
-}
 
 @Composable
 fun ProfileScreen(
@@ -65,6 +56,7 @@ fun ProfileScreen(
     val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
 
     val projectCount by viewModel.projectCount.collectAsState()
+    val userColor by profileViewModel.userColor.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -87,7 +79,7 @@ fun ProfileScreen(
                 )
             } else {
                 val firstLetter = user.email.substringBefore("@").first().uppercaseChar()
-                val backgroundColor = getRandomColor()
+                val backgroundColor = userColor ?: Color.Gray
 
                 Box(
                     modifier = Modifier
