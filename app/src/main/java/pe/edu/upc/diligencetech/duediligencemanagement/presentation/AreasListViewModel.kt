@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.AreaResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditAreaResource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.AreasRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDiligenceProjectsRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.Area
@@ -71,6 +72,25 @@ class AreasListViewModel @Inject constructor(
                 _newArea.value = ""
                 return@launch
             } else {
+                return@launch
+            }
+        }
+        return true
+    }
+
+    fun editArea(areaId: Long, name: String): Boolean {
+        viewModelScope.launch {
+            val editAreaResource = EditAreaResource(name = name) // Crear el recurso para la actualización
+            val resource = repository.editArea(areaId, editAreaResource) // Llamar al repositorio para actualizar el área
+            if (resource is Resource.Success) {
+                // Actualizar la lista de áreas si la edición es exitosa
+                _areas.find { it.id == areaId }?.let { area ->
+                    val index = _areas.indexOf(area)
+                    _areas[index] = area.copy(name = name)
+                }
+                return@launch
+            } else {
+                // Manejar el error según sea necesario
                 return@launch
             }
         }
