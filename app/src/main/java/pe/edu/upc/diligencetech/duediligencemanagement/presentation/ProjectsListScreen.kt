@@ -307,7 +307,7 @@ fun ProjectCard(
     onClick: () -> Unit,
     onChangeActiveStatus: (Long, Boolean) -> Unit
 ) {
-    val cardColor = if (project.active) Color(0xFFD6773D) else Color(0xFF282828) // Naranja claro si está completado
+    val cardColor = if (project.active) Color(0xC4AF673A) else Color(0xFF282828) // Naranja claro si está completado
     val isCompleted = project.active // Verificar si está completado
 
     Card(
