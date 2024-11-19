@@ -27,6 +27,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -46,6 +49,7 @@ fun ProfileScreen(
 ) {
 
     val user = profileViewModel.user.collectAsState().value
+    val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -105,7 +109,7 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "11 de Septiembre, 2024",
+                                text = currentDate,
                                 color = Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
