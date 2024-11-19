@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
+import kotlin.random.Random
 
 @Composable
 fun MessageDetailsScreen(
@@ -120,11 +121,25 @@ fun MessageDetailsScreen(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.personal_profile_icon),
-                    contentDescription = "Folder",
-                    modifier = Modifier.size(50.dp)
-                )
+                val firstLetter = userMessages.getOrNull(0)?.firstOrNull()?.uppercaseChar() ?: message?.userId.toString().firstOrNull()?.uppercaseChar()
+                val backgroundColor = getRandomColor()
+
+                Box(
+                    modifier = Modifier
+                        .background(backgroundColor, CircleShape)
+                        .size(50.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = firstLetter.toString(),
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            fontSize = 30.sp
+                        )
+                    )
+                }
                 Spacer(modifier = Modifier.padding(8.dp))
                 Column(
                     modifier = Modifier

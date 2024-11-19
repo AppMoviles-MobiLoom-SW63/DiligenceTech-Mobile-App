@@ -32,6 +32,16 @@ import pe.edu.upc.diligencetech.ui.theme.Montserrat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
+
+fun getRandomColor(): Color {
+    val random = Random.Default
+    return Color(
+        red = random.nextInt(256),
+        green = random.nextInt(256),
+        blue = random.nextInt(256)
+    )
+}
 
 @Composable
 fun ProfileScreen(
@@ -76,6 +86,9 @@ fun ProfileScreen(
                     modifier = Modifier.padding(top = 24.dp)
                 )
             } else {
+                val firstLetter = user.email.substringBefore("@").first().uppercaseChar()
+                val backgroundColor = getRandomColor()
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -250,11 +263,22 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.height(18.dp))
 
-                            Image(
-                                painter = painterResource(id = R.drawable.personal_profile_icon),
-                                contentDescription = null,
-                                modifier = Modifier.size(60.dp)
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .background(backgroundColor, CircleShape)
+                                    .size(60.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = firstLetter.toString(),
+                                    style = TextStyle(
+                                        fontFamily = Montserrat,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        fontSize = 40.sp
+                                    )
+                                )
+                            }
                             Spacer(modifier = Modifier.height(18.dp))
                             Text(
                                 text = user.email.substringBefore("@"),
