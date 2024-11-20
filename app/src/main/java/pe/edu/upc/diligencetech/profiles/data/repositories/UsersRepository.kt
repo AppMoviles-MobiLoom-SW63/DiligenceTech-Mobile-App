@@ -11,7 +11,7 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val usersService: UsersService
 ) {
-    suspend fun getUserById(id: Int): Resource<User> = withContext(Dispatchers.IO) {
+    suspend fun getUserById(id: Long): Resource<User> = withContext(Dispatchers.IO) {
         try{
             val response = usersService.getUserById(id)
             if(response.isSuccessful){

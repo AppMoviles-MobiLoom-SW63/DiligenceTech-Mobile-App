@@ -8,5 +8,5 @@ import retrofit2.http.Path
 interface UsersService {
 
     @GET("users/{userId}")
-    suspend fun getUserById(@Path("userId")userId: Int): Response<UserDto>
+    suspend fun getUserById(@Path("userId")userId: Long): Response<UserDto>
 }
