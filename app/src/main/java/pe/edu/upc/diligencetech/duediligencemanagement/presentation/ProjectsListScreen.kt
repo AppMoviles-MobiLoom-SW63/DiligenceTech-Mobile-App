@@ -13,11 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -29,6 +34,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -45,6 +51,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -391,8 +398,18 @@ fun ProjectInputDialog(
     onAddProject: () -> Unit
 ) {
     val newProject = viewModel.newProject
-    val rawBuyAgents = viewModel.rawBuyAgents
-    val rawSellAgents = viewModel.rawSellAgents
+    val rawBuyAgent = remember { mutableStateOf("") }
+    val buyAgentsList = remember { mutableStateListOf<String>() }
+    val invalidBuyAgents = remember { mutableStateListOf<String>() } // Lista de correos inválidos
+    val rawSellAgent = remember { mutableStateOf("") }
+    val sellAgentsList = remember { mutableStateListOf<String>() }
+    val invalidSellAgents = remember { mutableStateListOf<String>() } // Lista de correos inválidos
+    val showInvalidEmailsDialog = remember { mutableStateOf(false) } // Estado para el diálogo de correos inválidos
+
+    // Helper para validar correo electrónico
+    fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -401,6 +418,7 @@ fun ProjectInputDialog(
                 .padding(25.dp)
         ) {
             Column {
+                // Título
                 Text(
                     text = "Crear nuevo proyecto",
                     style = TextStyle(
@@ -420,12 +438,10 @@ fun ProjectInputDialog(
                 )
                 Spacer(modifier = Modifier.height(25.dp))
 
-
+                // Nombre del proyecto
                 OutlinedTextField(
                     value = newProject.value,
-                    onValueChange = {
-                        viewModel.onNewProjectChange(it)
-                    },
+                    onValueChange = { viewModel.onNewProjectChange(it) },
                     label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
                     placeholder = { Text("Ingrese nombre", fontFamily = Montserrat, color = Color.Gray) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -439,37 +455,30 @@ fun ProjectInputDialog(
                         fontFamily = Montserrat
                     )
                 )
-                Spacer(modifier = Modifier
-                    .height(16.dp)
-                )
-
-                OutlinedTextField(
-                    value = rawBuyAgents.value,
-                    onValueChange = {
-                        viewModel.onRawBuyAgentsChange(it)
-                    },
-                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese agentes de compra", fontFamily = Montserrat, color = Color.Gray) },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = Color(0xFFD6773D),
-                        unfocusedLabelColor = Color(0xFFD6773D),
-                        cursorColor = Color(0xFFD6773D),
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    textStyle = TextStyle(
-                        color = Color.White,
-                        fontFamily = Montserrat
-                    )
-                )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Campo y chips para Agentes de Compra
                 OutlinedTextField(
-                    value = rawSellAgents.value,
-                    onValueChange = {
-                        viewModel.onRawSellAgentsChange(it)
-                    },
-                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese agentes de venta", fontFamily = Montserrat, color = Color.Gray) },
+                    value = rawBuyAgent.value,
+                    onValueChange = { rawBuyAgent.value = it },
+                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color.White) },
+                    placeholder = { Text("Ingrese correo y presione Enter", fontFamily = Montserrat, color = Color.Gray) },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            val email = rawBuyAgent.value.trim()
+                            if (email.isNotEmpty()) {
+                                if (isValidEmail(email)) {
+                                    buyAgentsList.add(email)
+                                    invalidBuyAgents.remove(email)
+                                } else {
+                                    invalidBuyAgents.add(email)
+                                }
+                                rawBuyAgent.value = "" // Limpiar campo
+                            }
+                        }
+                    ),
+                    singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedLabelColor = Color(0xFFD6773D),
                         unfocusedLabelColor = Color(0xFFD6773D),
@@ -481,22 +490,81 @@ fun ProjectInputDialog(
                         fontFamily = Montserrat
                     )
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow {
+                    items(buyAgentsList) { email ->
+                        Chip(
+                            text = email,
+                            isInvalid = invalidBuyAgents.contains(email),
+                            onRemove = {
+                                buyAgentsList.remove(email)
+                                invalidBuyAgents.remove(email)
+                            }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Campo y chips para Agentes de Venta
+                OutlinedTextField(
+                    value = rawSellAgent.value,
+                    onValueChange = { rawSellAgent.value = it },
+                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color.White) },
+                    placeholder = { Text("Ingrese correo y presione Enter", fontFamily = Montserrat, color = Color.Gray) },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            val email = rawSellAgent.value.trim()
+                            if (email.isNotEmpty()) {
+                                if (isValidEmail(email)) {
+                                    sellAgentsList.add(email)
+                                    invalidSellAgents.remove(email)
+                                } else {
+                                    invalidSellAgents.add(email)
+                                }
+                                rawSellAgent.value = "" // Limpiar campo
+                            }
+                        }
+                    ),
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = Color(0xFFD6773D),
+                        unfocusedLabelColor = Color(0xFFD6773D),
+                        cursorColor = Color(0xFFD6773D),
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    textStyle = TextStyle(
+                        color = Color.White,
+                        fontFamily = Montserrat
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow {
+                    items(sellAgentsList) { email ->
+                        Chip(
+                            text = email,
+                            isInvalid = invalidSellAgents.contains(email),
+                            onRemove = {
+                                sellAgentsList.remove(email)
+                                invalidSellAgents.remove(email)
+                            }
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(46.dp))
 
+                // Botones de acción
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = {
-                            onDismiss()
-                        },
+                        onClick = { onDismiss() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Color(0xFFD6773D)
                         ),
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
@@ -512,18 +580,25 @@ fun ProjectInputDialog(
 
                     Button(
                         onClick = {
-                            onAddProject()
+                            if (invalidBuyAgents.isNotEmpty() || invalidSellAgents.isNotEmpty()) {
+                                showInvalidEmailsDialog.value = true
+                            } else {
+                                val buyAgentsString = buyAgentsList.joinToString(",")
+                                val sellAgentsString = sellAgentsList.joinToString(",")
+                                viewModel.onRawBuyAgentsChange(buyAgentsString)
+                                viewModel.onRawSellAgentsChange(sellAgentsString)
+                                onAddProject()
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFD6773D),
                             contentColor = Color.White
                         ),
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            "Crear",
+                            "Guardar",
                             style = TextStyle(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.SemiBold,
@@ -533,6 +608,53 @@ fun ProjectInputDialog(
                     }
                 }
             }
+        }
+    }
+
+    // Diálogo para mostrar correos inválidos
+    if (showInvalidEmailsDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showInvalidEmailsDialog.value = false },
+            title = { Text("Correos inválidos") },
+            text = {
+                Column {
+                    Text("No se puede crear el proyecto porque hay correos inválidos:")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    invalidBuyAgents.forEach { email ->
+                        Text("- $email", color = Color.Red)
+                    }
+                    invalidSellAgents.forEach { email ->
+                        Text("- $email", color = Color.Red)
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = { showInvalidEmailsDialog.value = false }) {
+                    Text("Cerrar")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun Chip(text: String, isInvalid: Boolean, onRemove: () -> Unit) {
+    val backgroundColor = if (isInvalid) Color.Red else Color.Gray
+    Box(
+        modifier = Modifier
+            .background(backgroundColor, RoundedCornerShape(16.dp))
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clickable { onRemove() }
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = text, color = Color.White, fontSize = 14.sp)
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Remove",
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }

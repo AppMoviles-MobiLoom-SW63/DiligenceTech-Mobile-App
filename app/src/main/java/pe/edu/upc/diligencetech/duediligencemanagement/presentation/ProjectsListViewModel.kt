@@ -16,11 +16,14 @@ import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.Edi
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.FolderResource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDiligenceProjectsRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.DueDiligenceProject
+import pe.edu.upc.diligencetech.profiles.data.repositories.UserRepository
+import pe.edu.upc.diligencetech.profiles.domain.User
 import javax.inject.Inject
 
 @HiltViewModel
 class ProjectsListViewModel @Inject constructor(
-    private val repository: DueDiligenceProjectsRepository
+    private val repository: DueDiligenceProjectsRepository,
+    private val userRepository: UserRepository
 ): ViewModel() {
     private var _projects = SnapshotStateList<DueDiligenceProject>()
     val projects: SnapshotStateList<DueDiligenceProject> get() = _projects
@@ -30,6 +33,29 @@ class ProjectsListViewModel @Inject constructor(
     val rawBuyAgents: State<String> get() = _rawBuyAgents
     private val _rawSellAgents = mutableStateOf("")
     val rawSellAgents: State<String> get() = _rawSellAgents
+
+    suspend fun validateUsersByEmail(emails: List<String>): Resource<List<User>> {
+        val validUsers = mutableListOf<User>()
+        val errors = mutableListOf<String>()
+
+        for (email in emails) {
+            when (val result = userRepository.getUserByEmail(email)) {
+                is Resource.Success -> {
+                    result.data?.let { validUsers.add(it) }
+                }
+                is Resource.Error -> {
+                    errors.add("El correo $email no corresponde a un usuario existente.")
+                }
+            }
+        }
+
+        return if (errors.isNotEmpty()) {
+            Resource.Error(errors.joinToString("\n"))
+        } else {
+            Resource.Success(validUsers)
+        }
+    }
+
 
     fun getProjects(): Boolean {
         viewModelScope.launch {
@@ -61,37 +87,55 @@ class ProjectsListViewModel @Inject constructor(
     }
 
     fun addProject(): Boolean {
-        // transform into correct format
+        // Transformar los correos en listas
         val buyAgents = rawBuyAgents.value.split(",").map { it.trim() }
         val sellAgents = rawSellAgents.value.split(",").map { it.trim() }
-        Log.d("Add Project", "Adding project")
-        var roles: List<Boolean> = buyAgents.map {
-            return@map true
-        }
-        Log.d("Add Project", "Adding project")
-        val agents = buyAgents + sellAgents
-        roles = roles + sellAgents.map {
-            return@map false
-        }
-        Log.d("Add Project", "Adding project")
-        val projectResource = DueDiligenceProjectResource(roles, agents, newProject.value, active = false)
+
+        // Estado para rastrear el éxito del proceso
+        var isSuccess = true
+
         viewModelScope.launch {
-            val resource = repository.createDueDiligenceProject(projectResource)
-            if (resource is Resource.Success) {
-                _projects.clear()
-                resource.data.let {
-                    _projects.addAll(it!!.toMutableList())
+            try {
+                // Validar usuarios por correo electrónico
+                val validationResult = validateUsersByEmail(buyAgents + sellAgents)
+
+                if (validationResult is Resource.Success) {
+                    val validUsers = validationResult.data ?: emptyList()
+
+                    // Generar roles y agentes con usuarios validados
+                    val roles: List<Boolean> = buyAgents.map { true } + sellAgents.map { false }
+                    val agents = validUsers.map { it.email }
+
+                    Log.d("Add Project", "Todos los correos son válidos, creando el proyecto")
+                    val projectResource = DueDiligenceProjectResource(roles, agents, newProject.value, false)
+
+                    // Crear el proyecto
+                    val resource = repository.createDueDiligenceProject(projectResource)
+                    if (resource is Resource.Success) {
+                        // Actualizar lista de proyectos
+                        _projects.clear()
+                        resource.data?.let {
+                            _projects.addAll(it.toMutableList())
+                        }
+                        // Limpiar estados
+                        _newProject.value = ""
+                        _rawBuyAgents.value = ""
+                        _rawSellAgents.value = ""
+                    } else {
+                        isSuccess = false
+                        Log.e("Add Project", "Error al crear el proyecto: ${resource.message}")
+                    }
+                } else if (validationResult is Resource.Error) {
+                    isSuccess = false
+                    Log.e("Add Project", "Error al validar correos: ${validationResult.message}")
                 }
-                _newProject.value = ""
-                _rawBuyAgents.value = ""
-                _rawSellAgents.value = ""
-                return@launch
-            }
-            else {
-                return@launch
+            } catch (e: Exception) {
+                isSuccess = false
+                Log.e("Add Project", "Excepción: ${e.message}")
             }
         }
-        return true
+
+        return isSuccess
     }
 
     fun editProjectActive(projectId: Long, active: Boolean): Boolean {
@@ -110,4 +154,6 @@ class ProjectsListViewModel @Inject constructor(
         }
         return true
     }
+
+
 }

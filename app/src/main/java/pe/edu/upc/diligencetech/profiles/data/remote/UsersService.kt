@@ -9,5 +9,8 @@ interface UsersService {
 
     @GET("users/{userId}")
     suspend fun getUserById(@Path("userId")userId: Long): Response<UserDto>
+
+    @GET("users/email/{email}")
+    suspend fun getUserByEmail(@Path("email")email: String): Response<UserDto>
 }
 
