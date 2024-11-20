@@ -58,5 +58,22 @@ interface DueDiligenceProjectsService {
     @GET("due-diligence-projects/user/{username}")
     suspend fun getDueDiligenceProjectsByUsername(@Path("username") username: String): Response<List<DueDiligenceProjectDto>>
 
+    @Headers(
+        value = [
+            "accept: application/json"
+        ]
+    )
+    @GET("api/v1/due-diligence-projects/user/active/{username}")
+    suspend fun getActiveDueDiligenceProjectsByUsername(@Path("username") username: String): Response<List<DueDiligenceProjectDto>>
+
+    @Headers(
+        value = [
+            "accept: application/json"
+        ]
+    )
+    @GET("api/v1/due-diligence-projects/user/complete/{username}")
+    suspend fun getCompletedDueDiligenceProjectsByUsername(@Path("username") username: String): Response<List<DueDiligenceProjectDto>>
+
+
 
 }
