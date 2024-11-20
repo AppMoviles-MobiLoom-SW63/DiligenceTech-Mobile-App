@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -64,6 +67,14 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.room.runtime)
+    implementation(libs.androidx.benchmark.macro)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android.gradle.plugin.v252)
+    implementation(libs.hilt.android)
+    implementation(libs.logging.interceptor)
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-storage-ktx")
+    kapt(libs.google.hilt.android.compiler)
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
