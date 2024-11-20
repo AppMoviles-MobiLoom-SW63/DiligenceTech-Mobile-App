@@ -36,13 +36,16 @@ class DashboardViewModel @Inject constructor(
                 _totalMembers.value = repository.calculateTotalMembers(count)
 
                 val activeCount = repository.getUserActiveProjectCount()
+                println("Active Projects Count: $activeCount") // Temporal log
                 _activeProjectCount.value = activeCount
 
                 val completedCount = repository.getUserCompletedProjectCount()
+                println("Completed Projects Count: $completedCount") // Temporal log
                 _completedProjectCount.value = completedCount
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
 }
