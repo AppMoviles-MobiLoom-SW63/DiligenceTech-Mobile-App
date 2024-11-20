@@ -358,7 +358,7 @@ fun ProjectCard(
             Icon(
                 painter = painterResource(id = R.drawable.project_icon),
                 contentDescription = "Folder",
-                tint = Color(0xFF282828),
+                tint = if (isCompleted) Color(0xFF282828) else  Color(0xFFD6773D),
                 modifier = Modifier.size(64.dp)
             )
 
