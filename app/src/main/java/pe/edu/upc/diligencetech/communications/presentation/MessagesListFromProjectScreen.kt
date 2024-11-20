@@ -65,6 +65,16 @@ import pe.edu.upc.diligencetech.communications.domain.Messages
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectInputDialog
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
+import kotlin.random.Random
+
+fun getRandomColor(): Color {
+    val random = Random.Default
+    return Color(
+        red = random.nextInt(256),
+        green = random.nextInt(256),
+        blue = random.nextInt(256)
+    )
+}
 
 @Composable
 fun MessagesListFromProjectScreen(
@@ -88,6 +98,7 @@ fun MessagesListFromProjectScreen(
     }
 
     val messages by viewModel.messages.collectAsState()
+    val userMessages by viewModel.userMessages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -205,9 +216,18 @@ fun MessagesListFromProjectScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                messages.forEach { message ->
+                messages.forEachIndexed { index, message ->
                     MessageCard(
-                        contactName = message.userId.toString(),
+                        firstLetter = try {
+                            userMessages[index].substringBefore("@").first().uppercaseChar()
+                        } catch (e: Exception) {
+                            message.userId.toString().first().uppercaseChar()
+                        },
+                        contactName = try {
+                            "De: " + userMessages[index]
+                        } catch (e: Exception) {
+                            "De: " + message.userId.toString()
+                        },
                         messageTitle = message.subject,
                         onClick = {
                             navController.navigate("messageDetailsScreen/${message.id}")
@@ -259,10 +279,13 @@ fun MessagesListFromProjectScreen(
 
 @Composable
 fun MessageCard(
+    firstLetter: Char,
     contactName: String,
     messageTitle: String,
     onClick: () -> Unit
 ) {
+    val backgroundColor = getRandomColor()
+
     Card(
         modifier = Modifier
             .padding(bottom = 10.dp)
@@ -281,11 +304,22 @@ fun MessageCard(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.personal_profile_icon),
-                contentDescription = "Folder",
-                modifier = Modifier.size(50.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .background(backgroundColor, CircleShape)
+                    .size(50.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = firstLetter.toString(),
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 30.sp
+                    )
+                )
+            }
             Spacer(modifier = Modifier.padding(8.dp))
             Column(
                 modifier = Modifier
