@@ -16,6 +16,26 @@ class DashboardRepository @Inject constructor(
         }
     }
 
+    suspend fun getUserActiveProjectCount(): Int {
+        val response = dueDiligenceProjectsService.getActiveDueDiligenceProjectsByUsername(Constants.username.toString())
+        return if (response.isSuccessful) {
+            response.body()?.size ?: 0
+        } else {
+            0
+        }
+    }
+
+    suspend fun getUserCompletedProjectCount(): Int {
+        val response = dueDiligenceProjectsService.getCompletedDueDiligenceProjectsByUsername(Constants.username.toString())
+        return if (response.isSuccessful) {
+            response.body()?.size ?: 0
+        } else {
+            0
+        }
+    }
+
+
+
     fun calculateTotalMembers(projectCount: Int): Int {
         return projectCount * 2
     }
