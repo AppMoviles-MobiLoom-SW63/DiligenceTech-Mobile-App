@@ -85,6 +85,8 @@ fun FoldersListScreen(
 
         var searchQuery by remember { mutableStateOf("") } // Variable para el buscador
         var showDialog by remember { mutableStateOf(false) }
+        var showEditDialog by remember { mutableStateOf(false) }
+        var selectedFolder by remember { mutableStateOf<Pair<Long, String>?>(null) }
         val currentArea by viewModel.currentArea
         val totalStorage = 36
         val usedStorage = 10
@@ -261,18 +263,32 @@ fun FoldersListScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (i in folders.indices) {
-                        if (searchQuery.isEmpty() || folders[i].name.contains(searchQuery, ignoreCase = true)) {
+                    for (folder in folders) {
+                        if (searchQuery.isEmpty() || folder.name.contains(searchQuery, ignoreCase = true)) {
                             FolderCard(
-                                projectName = folders[i].name,
-                            ) {
-                                onEnteringFolderClick(folders[i].id)
-                            }
+                                folderId = folder.id,
+                                projectName = folder.name,
+                                onClick = { onEnteringFolderClick(folder.id) },
+                                onEditClick = { folderId, folderName ->
+                                    selectedFolder = folderId to folderName
+                                    showEditDialog = true
+                                }
+                            )
                             Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
                     }
                 }
 
+                if (showEditDialog && selectedFolder != null) {
+                    FolderEditDialog(
+                        folderName = selectedFolder!!.second,
+                        onDismiss = { showEditDialog = false },
+                        onEditFolder = { newName ->
+                            showEditDialog = false
+                            viewModel.editFolder(selectedFolder!!.first, newName)
+                        }
+                    )
+                }
                 if (showDialog) {
                     FolderInputDialog (
                         onDismiss = { showDialog = false },
@@ -304,8 +320,10 @@ fun FoldersListScreen(
 
 @Composable
 fun FolderCard(
+    folderId: Long,
     projectName: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEditClick: (Long, String) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -325,7 +343,7 @@ fun FolderCard(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start// Para que los elementos internos estén alineados
+                horizontalArrangement = Arrangement.Start // Para que los elementos internos estén alineados
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.folders_icon), // Reemplaza con tu ícono
@@ -351,11 +369,118 @@ fun FolderCard(
                 tint = Color.White,
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { }
+                    .clickable {
+                        onEditClick(folderId, projectName)
+                    }
             )
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FolderEditDialog(
+    folderName: String, // Nombre actual del folder
+    onDismiss: () -> Unit,
+    onEditFolder: (newName: String) -> Unit
+) {
+    var updatedFolderName by remember { mutableStateOf(folderName) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
+                .padding(25.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Editar Folder",
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        fontSize = 17.sp
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color(0xFF626262))
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+
+                OutlinedTextField(
+                    value = updatedFolderName,
+                    onValueChange = { updatedFolderName = it },
+                    label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
+                    placeholder = { Text("Ingrese nuevo nombre", fontFamily = Montserrat, color = Color.Gray) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = Color(0xFFD6773D),
+                        unfocusedLabelColor = Color(0xFFD6773D),
+                        cursorColor = Color(0xFFD6773D),
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    textStyle = TextStyle(
+                        color = Color.White,
+                        fontFamily = Montserrat
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(46.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { onDismiss() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color(0xFFD6773D)
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            "Cancelar",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Button(
+                        onClick = { onEditFolder(updatedFolderName) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD6773D),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            "Guardar",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

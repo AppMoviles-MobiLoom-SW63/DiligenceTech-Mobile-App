@@ -81,8 +81,9 @@ fun AreasListScreen(
         // variables
         val areas = viewModel.areas
         var searchQuery by remember { mutableStateOf("") } // Variable para el buscador
-        var areaToEdit by remember { mutableStateOf<Area?>(null) }
         var showDialog by remember { mutableStateOf(false) }
+        var showEditDialog by remember { mutableStateOf(false) }
+        var selectedArea by remember { mutableStateOf<Pair<Long, String>?>(null) }
         val totalStorage = 36
         val usedStorage = 10
         val areasCreated by remember { mutableStateOf(viewModel.getAreas(projectId)) }
@@ -259,14 +260,31 @@ fun AreasListScreen(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    for (i in areas.indices) {
-                        if (searchQuery.isEmpty() || areas[i].name.contains(searchQuery, ignoreCase = true)) {
-                            AreaCard(projectName = areas[i].name) {
-                                onEnteringAreaClick(areas[i].id)
-                            }
+                    for (area in areas) {
+                        if (searchQuery.isEmpty() || area.name.contains(searchQuery, ignoreCase = true)) {
+                            AreaCard(
+                                areaId = area.id,
+                                projectName = area.name,
+                                onClick = { onEnteringAreaClick(area.id) },
+                                onEditClick = { areaId, areaName ->
+                                    selectedArea = areaId to areaName
+                                    showEditDialog = true
+                                }
+                            )
                             Spacer(modifier = Modifier.height(8.dp)) // Espacio entre las tarjetas
                         }
                     }
+                }
+
+                if (showEditDialog && selectedArea != null) {
+                    AreaEditDialog(
+                        areaName = selectedArea!!.second,
+                        onDismiss = { showEditDialog = false },
+                        ondEditArea = { newName ->
+                            showEditDialog = false
+                            viewModel.editArea(selectedArea!!.first, newName)
+                        }
+                    )
                 }
 
                 if (showDialog) {
@@ -300,8 +318,10 @@ fun AreasListScreen(
 
 @Composable
 fun AreaCard(
+    areaId: Long,
     projectName: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEditClick: (Long, String) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -347,7 +367,9 @@ fun AreaCard(
                 tint = Color.White,
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { }
+                    .clickable {
+                        onEditClick(areaId, projectName)
+                    }
             )
         }
     }
@@ -463,51 +485,103 @@ fun AreaInputDialog(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditAreaDialog(
-    currentAreaName: String,
+fun AreaEditDialog(
+    areaName: String, // Nombre actual del folder
     onDismiss: () -> Unit,
-    onSave: (String) -> Unit
+    ondEditArea: (newName: String) -> Unit
 ) {
-    var areaName by remember { mutableStateOf(currentAreaName) }
+    var updatedAreaName by remember { mutableStateOf(areaName) }
 
-    Dialog(onDismissRequest = { onDismiss() }) {
+    Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = Modifier
                 .background(Color(0xFF282828), shape = RoundedCornerShape(8.dp))
                 .padding(25.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text("Editar Área")
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    value = areaName,
-                    onValueChange = { areaName = it },
-                    label = { Text("Nombre del Área") },
-                    modifier = Modifier.fillMaxWidth()
+            Column {
+                Text(
+                    text = "Editar Area",
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        fontSize = 17.sp
+                    )
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color(0xFF626262))
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+
+                OutlinedTextField(
+                    value = updatedAreaName,
+                    onValueChange = { updatedAreaName = it },
+                    label = { Text("Nombre", fontFamily = Montserrat, color = Color.White) },
+                    placeholder = { Text("Ingrese nuevo nombre", fontFamily = Montserrat, color = Color.Gray) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedLabelColor = Color(0xFFD6773D),
+                        unfocusedLabelColor = Color(0xFFD6773D),
+                        cursorColor = Color(0xFFD6773D),
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    textStyle = TextStyle(
+                        color = Color.White,
+                        fontFamily = Montserrat
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(46.dp))
 
                 Row(
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Button(onClick = {
-                        onSave(areaName)
-                        onDismiss()
-                    }) {
-                        Text("Guardar")
+                    Button(
+                        onClick = { onDismiss() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color(0xFFD6773D)
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            "Cancelar",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        )
                     }
+                    Spacer(modifier = Modifier.width(10.dp))
 
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Button(onClick = onDismiss) {
-                        Text("Cancelar")
+                    Button(
+                        onClick = { ondEditArea(updatedAreaName) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD6773D),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .weight(1f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            "Guardar",
+                            style = TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        )
                     }
                 }
             }

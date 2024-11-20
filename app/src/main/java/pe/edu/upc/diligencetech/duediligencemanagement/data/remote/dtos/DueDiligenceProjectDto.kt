@@ -7,7 +7,9 @@ data class DueDiligenceProjectDto(
     @SerializedName("id")
     val id: Long,
     @SerializedName("projectName")
-    val projectName: String
+    val projectName: String,
+    @SerializedName("active")
+    val active: Boolean
 )
 
-fun DueDiligenceProjectDto.toProject() = DueDiligenceProject(id, projectName)
+fun DueDiligenceProjectDto.toProject() = DueDiligenceProject(id, projectName, active)

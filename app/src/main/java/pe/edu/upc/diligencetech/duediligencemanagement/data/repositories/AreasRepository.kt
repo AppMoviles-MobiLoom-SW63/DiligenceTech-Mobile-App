@@ -7,6 +7,7 @@ import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.AreasService
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.toArea
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.AreaResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditAreaResource
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.Area
 
 class AreasRepository(
@@ -51,17 +52,7 @@ class AreasRepository(
             return@withContext Resource.Error("Something went wrong: ${e.message}")
         }
     }
-    suspend fun editArea(areaId: String, areaResource: AreaResource): Resource<Unit> = withContext(Dispatchers.IO) {
-        try {
-            val response = areasService.editArea(areaId, areaResource)
-            if (response.isSuccessful) {
-                return@withContext Resource.Success(Unit) // Edición exitosa
-            }
-            return@withContext Resource.Error("Error al editar el área.")
-        } catch (e: Exception) {
-            return@withContext Resource.Error("Error: ${e.message}")
-        }
-    }
+
     suspend fun getAreaById(areaId: Long): Resource<Area> = withContext(Dispatchers.IO) {
         try {
             val response = areasService.getAreaById(areaId)
@@ -76,6 +67,17 @@ class AreasRepository(
             return@withContext Resource.Error("Something went wrong.")
         } catch (e: Exception) {
             return@withContext Resource.Error("Something went wrong: ${e.message}")
+        }
+    }
+    suspend fun editArea(areaId: Long, editAreaResource: EditAreaResource): Resource<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val response = areasService.editArea(areaId, editAreaResource)
+            if (response.isSuccessful) {
+                return@withContext Resource.Success(Unit) // Edición exitosa
+            }
+            return@withContext Resource.Error("Error al editar el área.")
+        } catch (e: Exception) {
+            return@withContext Resource.Error("Error: ${e.message}")
         }
     }
 }

@@ -10,3 +10,4 @@ interface UsersService {
     @GET("users/{userId}")
     suspend fun getUserById(@Path("userId")userId: Long): Response<UserDto>
 }
+

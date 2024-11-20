@@ -11,6 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.DueDiligenceProjectResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditFolderResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditProjectResource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.FolderResource
 import pe.edu.upc.diligencetech.duediligencemanagement.data.repositories.DueDiligenceProjectsRepository
 import pe.edu.upc.diligencetech.duediligencemanagement.domain.DueDiligenceProject
@@ -72,7 +74,7 @@ class ProjectsListViewModel @Inject constructor(
             return@map false
         }
         Log.d("Add Project", "Adding project")
-        val projectResource = DueDiligenceProjectResource(roles, agents, newProject.value)
+        val projectResource = DueDiligenceProjectResource(roles, agents, newProject.value, active = false)
         viewModelScope.launch {
             val resource = repository.createDueDiligenceProject(projectResource)
             if (resource is Resource.Success) {
@@ -86,6 +88,23 @@ class ProjectsListViewModel @Inject constructor(
                 return@launch
             }
             else {
+                return@launch
+            }
+        }
+        return true
+    }
+
+    fun editProjectActive(projectId: Long, active: Boolean): Boolean {
+        viewModelScope.launch {
+            val editProjectResource = EditProjectResource(active = active)
+            val resource = repository.editProjectActive(projectId, editProjectResource)
+            if (resource is Resource.Success) {
+                _projects.find { it.id == projectId }?.let { project ->
+                    val index = _projects.indexOf(project)
+                    _projects[index] = project.copy(active = active)
+                }
+                return@launch
+            } else {
                 return@launch
             }
         }

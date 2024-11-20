@@ -1,7 +1,10 @@
 package pe.edu.upc.diligencetech.duediligencemanagement.data.remote
 
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.DueDiligenceProjectDto
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.dtos.FolderDto
 import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.DueDiligenceProjectResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditFolderResource
+import pe.edu.upc.diligencetech.duediligencemanagement.data.remote.resources.EditProjectResource
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -19,6 +22,17 @@ interface DueDiligenceProjectsService {
     )
     @GET("due-diligence-projects")
     suspend fun getDueDiligenceProjects(): Response<List<DueDiligenceProjectDto>>
+
+    @Headers(
+        value = [
+            "accept: application/json",
+        ]
+    )
+    @PUT("due-diligence-projects/complete-deactivate/{projectId}")
+    suspend fun editActiveProject(
+        @Path("projectId") projectId: Long,
+        @Body editProjectResource: EditProjectResource
+    ): Response<DueDiligenceProjectDto?>
 
     @Headers(
         value = [

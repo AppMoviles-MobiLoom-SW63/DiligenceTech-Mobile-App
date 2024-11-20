@@ -20,7 +20,10 @@ interface FoldersService {
         ]
     )
     @PUT("folders/{folderId}")
-    suspend fun editFolder(@Path("folderId") folderId: Long, @Body editFolderResource: EditFolderResource): Call<FolderDto?>
+    suspend fun editFolder(
+        @Path("folderId") folderId: Long,
+        @Body editFolderResource: EditFolderResource
+    ): Response<FolderDto?>
 
     @Headers(
         value = [
