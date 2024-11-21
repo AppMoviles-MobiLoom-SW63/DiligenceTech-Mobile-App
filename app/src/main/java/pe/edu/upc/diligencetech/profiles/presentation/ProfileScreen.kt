@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,6 +58,7 @@ fun ProfileScreen(
     val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
 
     val projectCount by viewModel.projectCount.collectAsState()
+    val formattedCreatedAt = agentName?.createdAt?.substringBefore(" ")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -69,14 +71,14 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(36.dp))
 
             if (user == null) {
-                Text(
-                    text = "No hay usuario disponible",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = Montserrat,
-                    modifier = Modifier.padding(top = 24.dp)
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    CircularProgressIndicator(
+                        color = Color.White
+                    )
+                }
             } else {
                 val firstLetter = user.email.substringBefore("@").first().uppercaseChar()
 
@@ -365,7 +367,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = agentName!!.createdAt.substringBefore(" "),
+                                text = formattedCreatedAt ?: "Cargando...",
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,
