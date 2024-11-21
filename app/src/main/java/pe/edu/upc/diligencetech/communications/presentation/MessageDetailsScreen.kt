@@ -53,6 +53,7 @@ fun MessageDetailsScreen(
     viewModel: MessagesViewModel = hiltViewModel()
 ) {
     val message by viewModel.getMessageById(messageId).collectAsState(initial = null)
+    val userMessages by viewModel.userMessages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -119,11 +120,24 @@ fun MessageDetailsScreen(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.personal_profile_icon),
-                    contentDescription = "Folder",
-                    modifier = Modifier.size(50.dp)
-                )
+                val firstLetter = userMessages.getOrNull(0)?.firstOrNull()?.uppercaseChar() ?: message?.userId.toString().firstOrNull()?.uppercaseChar()
+
+                Box(
+                    modifier = Modifier
+                        .background(Color(0xFF9B4A18), CircleShape)
+                        .size(50.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = firstLetter.toString(),
+                        style = TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            fontSize = 30.sp
+                        )
+                    )
+                }
                 Spacer(modifier = Modifier.padding(8.dp))
                 Column(
                     modifier = Modifier
@@ -132,7 +146,11 @@ fun MessageDetailsScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "Para: ${message?.destinationUserId}",
+                        text = try {
+                            "De: " + userMessages[0]
+                            } catch (e: Exception) {
+                            "De: " + message?.userId.toString()
+                        },
                         color = Color.White,
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Bold,

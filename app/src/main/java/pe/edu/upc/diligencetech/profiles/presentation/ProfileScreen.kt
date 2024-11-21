@@ -7,10 +7,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,7 +28,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
+import pe.edu.upc.diligencetech.dashboard.presentation.DashboardViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 
 @Composable
 fun ProfileScreen(
@@ -35,7 +42,8 @@ fun ProfileScreen(
     onMessagesClick: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    viewModel: DashboardViewModel = hiltViewModel()
 ) = WorkbenchScreen(
     onHomeClick = onHomeClick,
     onProjectsClick = onProjectsClick,
@@ -46,6 +54,11 @@ fun ProfileScreen(
 ) {
 
     val user = profileViewModel.user.collectAsState().value
+    val agentName = profileViewModel.agentName.collectAsState().value
+    val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
+
+    val projectCount by viewModel.projectCount.collectAsState()
+    val formattedCreatedAt = agentName?.createdAt?.substringBefore(" ")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -58,15 +71,17 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(36.dp))
 
             if (user == null) {
-                Text(
-                    text = "No hay usuario disponible",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = Montserrat,
-                    modifier = Modifier.padding(top = 24.dp)
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    CircularProgressIndicator(
+                        color = Color.White
+                    )
+                }
             } else {
+                val firstLetter = user.email.substringBefore("@").first().uppercaseChar()
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,7 +120,7 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "11 de Septiembre, 2024",
+                                text = currentDate,
                                 color = Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
@@ -160,7 +175,7 @@ fun ProfileScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "2",
+                                    text = projectCount.toString(),
                                     color = Color.White,
                                     fontSize = 25.sp,
                                     fontWeight = FontWeight.Bold,
@@ -241,14 +256,25 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.height(18.dp))
 
-                            Image(
-                                painter = painterResource(id = R.drawable.personal_profile_icon),
-                                contentDescription = null,
-                                modifier = Modifier.size(60.dp)
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .background(Color(0xFF9B4A18), CircleShape)
+                                    .size(60.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = firstLetter.toString(),
+                                    style = TextStyle(
+                                        fontFamily = Montserrat,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        fontSize = 40.sp
+                                    )
+                                )
+                            }
                             Spacer(modifier = Modifier.height(18.dp))
                             Text(
-                                text = user.email.substringBefore("@"),
+                                text = agentName?.name.toString(),
                                 color = Color.White,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
@@ -321,7 +347,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = user.email.substringBefore("@"),
+                                text = agentName?.name.toString(),
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,
@@ -332,7 +358,7 @@ fun ProfileScreen(
 
                         Row {
                             Text(
-                                text = "Tiempo en Diligence Tech:",
+                                text = "Fecha de creación de la cuenta:",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = Montserrat,
@@ -341,7 +367,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = "6 meses",
+                                text = formattedCreatedAt ?: "Cargando...",
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,

@@ -43,6 +43,10 @@ fun DashboardScreen(
 ) {
     val projectCount by viewModel.projectCount.collectAsState()
     val totalMembers by viewModel.totalMembers.collectAsState()
+    val activeProjectCount by viewModel.activeProjectCount.collectAsState()
+    val completedProjectCount by viewModel.completedProjectCount.collectAsState()
+
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -72,8 +76,8 @@ fun DashboardScreen(
             }
 
             ProjectCard("Total de proyectos", projectCount)
-            ProjectCard("Proyectos activos", projectCount)
-            ProjectCard("Proyectos completos", 0)  // Fijo en 0 según la solicitud
+            ProjectCard("Proyectos activos", activeProjectCount)
+            ProjectCard("Proyectos completados", completedProjectCount)
             ProjectCard("Total de miembros", totalMembers)
         }
     }

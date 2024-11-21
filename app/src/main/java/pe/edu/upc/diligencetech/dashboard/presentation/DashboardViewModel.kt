@@ -18,6 +18,12 @@ class DashboardViewModel @Inject constructor(
     private val _totalMembers = MutableStateFlow(0)
     val totalMembers: StateFlow<Int> = _totalMembers
 
+    private val _activeProjectCount = MutableStateFlow(0)
+    val activeProjectCount: StateFlow<Int> = _activeProjectCount
+
+    private val _completedProjectCount = MutableStateFlow(0)
+    val completedProjectCount: StateFlow<Int> = _completedProjectCount
+
     init {
         fetchData()
     }
@@ -28,9 +34,18 @@ class DashboardViewModel @Inject constructor(
                 val count = repository.getUserProjectCount()
                 _projectCount.value = count
                 _totalMembers.value = repository.calculateTotalMembers(count)
+
+                val activeCount = repository.getUserActiveProjectCount()
+                println("Active Projects Count: $activeCount") // Temporal log
+                _activeProjectCount.value = activeCount
+
+                val completedCount = repository.getUserCompletedProjectCount()
+                println("Completed Projects Count: $completedCount") // Temporal log
+                _completedProjectCount.value = completedCount
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
 }

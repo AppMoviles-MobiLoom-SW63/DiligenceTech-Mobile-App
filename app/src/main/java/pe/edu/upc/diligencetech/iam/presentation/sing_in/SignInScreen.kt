@@ -52,6 +52,8 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () 
     val username = viewModel.username.value
     val password = viewModel.password.value
     val passwordVisible = viewModel.passwordVisible.value
+    val errorMessage = viewModel.errorMessage.value
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -203,8 +205,22 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onSignUpTask: () 
                                         }
                                 )
                             }
+
                         )
                     }
+                    if (errorMessage.isNotEmpty()) {
+                        Text(
+                            text = errorMessage,
+                            color = Color.Red,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
                     Button(
                         onClick = {
                             viewModel.signIn(onSignInTask)

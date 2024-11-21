@@ -25,18 +25,27 @@ class SignInViewModel @Inject constructor(
     private val _passwordVisible = mutableStateOf(false)
     val passwordVisible: State<Boolean> get() = _passwordVisible
 
+    private val _errorMessage = mutableStateOf("")
+    val errorMessage: State<String> get() = _errorMessage
+
     fun signIn(onSuccessfulSignIn: (id: Long, username: String, token: String) -> Unit) {
         val signInResource = SignInResource(
             username = username.value,
             password = password.value
         )
         if (signInResource.username.isEmpty() || signInResource.password.isEmpty()) {
+            _errorMessage.value = "El correo o la contraseña no pueden estar vacíos."
             return
         }
         viewModelScope.launch {
-            val result = repository.signIn(signInResource)
-            if (result is Resource.Success) {
-                onSuccessfulSignIn(result.data!!.id.toLong(), result.data.username, result.data.token)
+            when (val result = repository.signIn(signInResource)) {
+                is Resource.Success -> {
+                    onSuccessfulSignIn(result.data!!.id.toLong(), result.data.username, result.data.token)
+                    _errorMessage.value = "" // Limpia el mensaje de error en caso de éxito.
+                }
+                is Resource.Error -> {
+                    _errorMessage.value = "El correo o la contraseña son incorrectos."
+                }
             }
         }
     }

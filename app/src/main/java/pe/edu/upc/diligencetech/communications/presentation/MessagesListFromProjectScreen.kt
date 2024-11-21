@@ -66,6 +66,7 @@ import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectInput
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
 
+
 @Composable
 fun MessagesListFromProjectScreen(
     projectId: Long,
@@ -88,6 +89,7 @@ fun MessagesListFromProjectScreen(
     }
 
     val messages by viewModel.messages.collectAsState()
+    val userMessages by viewModel.userMessages.collectAsState()
 
     WorkbenchScreen(
         onHomeClick = onHomeClick,
@@ -205,9 +207,18 @@ fun MessagesListFromProjectScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                messages.forEach { message ->
+                messages.forEachIndexed { index, message ->
                     MessageCard(
-                        contactName = message.userId.toString(),
+                        firstLetter = try {
+                            userMessages[index].substringBefore("@").first().uppercaseChar()
+                        } catch (e: Exception) {
+                            message.userId.toString().first().uppercaseChar()
+                        },
+                        contactName = try {
+                            "De: " + userMessages[index]
+                        } catch (e: Exception) {
+                            "De: " + message.userId.toString()
+                        },
                         messageTitle = message.subject,
                         onClick = {
                             navController.navigate("messageDetailsScreen/${message.id}")
@@ -259,10 +270,12 @@ fun MessagesListFromProjectScreen(
 
 @Composable
 fun MessageCard(
+    firstLetter: Char,
     contactName: String,
     messageTitle: String,
     onClick: () -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .padding(bottom = 10.dp)
@@ -281,11 +294,22 @@ fun MessageCard(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.personal_profile_icon),
-                contentDescription = "Folder",
-                modifier = Modifier.size(50.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .background(Color(0xFF9B4A18), CircleShape)
+                    .size(50.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = firstLetter.toString(),
+                    style = TextStyle(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        fontSize = 30.sp
+                    )
+                )
+            }
             Spacer(modifier = Modifier.padding(8.dp))
             Column(
                 modifier = Modifier
