@@ -118,7 +118,7 @@ fun ProjectsListForCommunicationsScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                for (i in projects.indices step 2) {
+                for (i in projects.indices) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
