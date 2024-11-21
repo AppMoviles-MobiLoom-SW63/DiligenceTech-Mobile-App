@@ -56,7 +56,6 @@ fun ProfileScreen(
     val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
 
     val projectCount by viewModel.projectCount.collectAsState()
-    val userColor by profileViewModel.userColor.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -79,7 +78,6 @@ fun ProfileScreen(
                 )
             } else {
                 val firstLetter = user.email.substringBefore("@").first().uppercaseChar()
-                val backgroundColor = userColor ?: Color.Gray
 
                 Box(
                     modifier = Modifier
@@ -257,7 +255,7 @@ fun ProfileScreen(
 
                             Box(
                                 modifier = Modifier
-                                    .background(backgroundColor, CircleShape)
+                                    .background(Color(0xFF9B4A18), CircleShape)
                                     .size(60.dp),
                                 contentAlignment = Alignment.Center
                             ) {

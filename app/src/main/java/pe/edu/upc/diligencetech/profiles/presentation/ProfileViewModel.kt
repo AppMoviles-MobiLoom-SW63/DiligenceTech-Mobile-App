@@ -21,9 +21,6 @@ class ProfileViewModel @Inject constructor(
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> get() = _user
 
-    private val _userColor = MutableStateFlow<Color?>(null)
-    val userColor: StateFlow<Color?> = _userColor
-
     init {
         fetchUserData()
     }
@@ -33,25 +30,9 @@ class ProfileViewModel @Inject constructor(
             try {
                 _user.value = repository.getUserById(Constants.id!!).data
                 Log.d("ProfileViewModel", "User data fetched successfully: ${_user.value}")
-                if (_userColor.value == null) {
-                    _userColor.value = getRandomColor()
-                }
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error fetching user data", e)
             }
         }
-    }
-
-    fun getRandomColor(): Color {
-        val random = Random.Default
-        return Color(
-            red = random.nextInt(256),
-            green = random.nextInt(256),
-            blue = random.nextInt(256)
-        )
-    }
-
-    fun setUserColor(color: Color) {
-        _userColor.value = color
     }
 }
