@@ -53,6 +53,7 @@ fun ProfileScreen(
 ) {
 
     val user = profileViewModel.user.collectAsState().value
+    val agentName = profileViewModel.agentName.collectAsState().value
     val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
 
     val projectCount by viewModel.projectCount.collectAsState()
@@ -271,7 +272,7 @@ fun ProfileScreen(
                             }
                             Spacer(modifier = Modifier.height(18.dp))
                             Text(
-                                text = user.email.substringBefore("@"),
+                                text = agentName?.name.toString(),
                                 color = Color.White,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
@@ -344,7 +345,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = user.email.substringBefore("@"),
+                                text = agentName?.name.toString(),
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,

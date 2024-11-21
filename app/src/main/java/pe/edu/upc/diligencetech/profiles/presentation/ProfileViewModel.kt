@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import pe.edu.upc.diligencetech.common.Constants
+import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.profiles.data.repositories.UserRepository
+import pe.edu.upc.diligencetech.profiles.domain.AgentResponse
 import pe.edu.upc.diligencetech.profiles.domain.User
 import javax.inject.Inject
 import kotlin.random.Random
@@ -21,8 +23,12 @@ class ProfileViewModel @Inject constructor(
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> get() = _user
 
+    private val _agentName = MutableStateFlow<AgentResponse?>(null)
+    val agentName: StateFlow<AgentResponse?> get() = _agentName
+
     init {
         fetchUserData()
+        fetchAgentName(Constants.id!!)
     }
 
     private fun fetchUserData() {
@@ -32,6 +38,22 @@ class ProfileViewModel @Inject constructor(
                 Log.d("ProfileViewModel", "User data fetched successfully: ${_user.value}")
             } catch (e: Exception) {
                 Log.e("ProfileViewModel", "Error fetching user data", e)
+            }
+        }
+    }
+
+    private fun fetchAgentName(agentId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = repository.getAgentName(agentId)
+                if (response is Resource.Success) {
+                    _agentName.value = response.data
+                    Log.d("ProfileViewModel", "Agent name fetched successfully: ${_agentName.value}")
+                } else {
+                    Log.e("ProfileViewModel", "Error fetching agent name: ${response.message}")
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Error fetching agent name", e)
             }
         }
     }
