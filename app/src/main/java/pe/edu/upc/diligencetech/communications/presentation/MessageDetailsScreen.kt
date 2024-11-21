@@ -40,7 +40,6 @@ import androidx.navigation.NavController
 import pe.edu.upc.diligencetech.R
 import pe.edu.upc.diligencetech.common.WorkbenchScreen
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
-import kotlin.random.Random
 
 @Composable
 fun MessageDetailsScreen(
@@ -122,11 +121,10 @@ fun MessageDetailsScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val firstLetter = userMessages.getOrNull(0)?.firstOrNull()?.uppercaseChar() ?: message?.userId.toString().firstOrNull()?.uppercaseChar()
-                val backgroundColor = getRandomColor()
 
                 Box(
                     modifier = Modifier
-                        .background(backgroundColor, CircleShape)
+                        .background(Color(0xFF9B4A18), CircleShape)
                         .size(50.dp),
                     contentAlignment = Alignment.Center
                 ) {

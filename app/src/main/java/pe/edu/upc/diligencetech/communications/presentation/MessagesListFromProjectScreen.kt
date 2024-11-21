@@ -65,16 +65,7 @@ import pe.edu.upc.diligencetech.communications.domain.Messages
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectInputDialog
 import pe.edu.upc.diligencetech.duediligencemanagement.presentation.ProjectsListViewModel
 import pe.edu.upc.diligencetech.ui.theme.Montserrat
-import kotlin.random.Random
 
-fun getRandomColor(): Color {
-    val random = Random.Default
-    return Color(
-        red = random.nextInt(256),
-        green = random.nextInt(256),
-        blue = random.nextInt(256)
-    )
-}
 
 @Composable
 fun MessagesListFromProjectScreen(
@@ -284,7 +275,6 @@ fun MessageCard(
     messageTitle: String,
     onClick: () -> Unit
 ) {
-    val backgroundColor = getRandomColor()
 
     Card(
         modifier = Modifier
@@ -306,7 +296,7 @@ fun MessageCard(
         ) {
             Box(
                 modifier = Modifier
-                    .background(backgroundColor, CircleShape)
+                    .background(Color(0xFF9B4A18), CircleShape)
                     .size(50.dp),
                 contentAlignment = Alignment.Center
             ) {

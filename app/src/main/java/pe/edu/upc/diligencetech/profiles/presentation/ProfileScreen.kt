@@ -53,10 +53,10 @@ fun ProfileScreen(
 ) {
 
     val user = profileViewModel.user.collectAsState().value
+    val agentName = profileViewModel.agentName.collectAsState().value
     val currentDate = SimpleDateFormat("dd 'de' MMMM, yyyy",Locale("es", "ES")).format(Date())
 
     val projectCount by viewModel.projectCount.collectAsState()
-    val userColor by profileViewModel.userColor.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -79,7 +79,6 @@ fun ProfileScreen(
                 )
             } else {
                 val firstLetter = user.email.substringBefore("@").first().uppercaseChar()
-                val backgroundColor = userColor ?: Color.Gray
 
                 Box(
                     modifier = Modifier
@@ -257,7 +256,7 @@ fun ProfileScreen(
 
                             Box(
                                 modifier = Modifier
-                                    .background(backgroundColor, CircleShape)
+                                    .background(Color(0xFF9B4A18), CircleShape)
                                     .size(60.dp),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -273,7 +272,7 @@ fun ProfileScreen(
                             }
                             Spacer(modifier = Modifier.height(18.dp))
                             Text(
-                                text = user.email.substringBefore("@"),
+                                text = agentName?.name.toString(),
                                 color = Color.White,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
@@ -346,7 +345,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = user.email.substringBefore("@"),
+                                text = agentName?.name.toString(),
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,
@@ -357,7 +356,7 @@ fun ProfileScreen(
 
                         Row {
                             Text(
-                                text = "Tiempo en Diligence Tech:",
+                                text = "Fecha de creación de la cuenta:",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = Montserrat,
@@ -366,7 +365,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = "6 meses",
+                                text = agentName!!.createdAt.substringBefore(" "),
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,
