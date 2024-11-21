@@ -458,14 +458,46 @@ fun ProjectInputDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Campo y chips para Agentes de Compra
-                OutlinedTextField(
-                    value = rawBuyAgent.value,
-                    onValueChange = { rawBuyAgent.value = it },
-                    label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese correo y presione Enter", fontFamily = Montserrat, color = Color.Gray) },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = rawBuyAgent.value,
+                        onValueChange = { rawBuyAgent.value = it },
+                        label = { Text("Agentes de Compra", fontFamily = Montserrat, color = Color.White) },
+                        placeholder = { Text("Ingrese correo", fontFamily = Montserrat, color = Color.Gray) },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                val email = rawBuyAgent.value.trim()
+                                if (email.isNotEmpty()) {
+                                    if (isValidEmail(email)) {
+                                        buyAgentsList.add(email)
+                                        invalidBuyAgents.remove(email)
+                                    } else {
+                                        invalidBuyAgents.add(email)
+                                    }
+                                    rawBuyAgent.value = "" // Limpiar campo
+                                }
+                            }
+                        ),
+                        singleLine = true,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = Color(0xFFD6773D),
+                            unfocusedLabelColor = Color(0xFFD6773D),
+                            cursorColor = Color(0xFFD6773D),
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        textStyle = TextStyle(
+                            color = Color.White,
+                            fontFamily = Montserrat
+                        ),
+                        modifier = Modifier.weight(1f) // Ensures the text field takes up available space
+                    )
+                    Spacer(modifier = Modifier.width(8.dp)) // Space between text field and button
+                    Button(
+                        onClick = {
                             val email = rawBuyAgent.value.trim()
                             if (email.isNotEmpty()) {
                                 if (isValidEmail(email)) {
@@ -474,22 +506,24 @@ fun ProjectInputDialog(
                                 } else {
                                     invalidBuyAgents.add(email)
                                 }
-                                rawBuyAgent.value = "" // Limpiar campo
+                                rawBuyAgent.value = "" // Clear the input field
                             }
-                        }
-                    ),
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = Color(0xFFD6773D),
-                        unfocusedLabelColor = Color(0xFFD6773D),
-                        cursorColor = Color(0xFFD6773D),
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    textStyle = TextStyle(
-                        color = Color.White,
-                        fontFamily = Montserrat
-                    )
-                )
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD6773D),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(4.dp),
+                        modifier = Modifier
+                            .width(60.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Add",
+                            tint = Color.White
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow {
                     items(buyAgentsList) { email ->
@@ -506,14 +540,46 @@ fun ProjectInputDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Campo y chips para Agentes de Venta
-                OutlinedTextField(
-                    value = rawSellAgent.value,
-                    onValueChange = { rawSellAgent.value = it },
-                    label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color.White) },
-                    placeholder = { Text("Ingrese correo y presione Enter", fontFamily = Montserrat, color = Color.Gray) },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = rawSellAgent.value,
+                        onValueChange = { rawSellAgent.value = it },
+                        label = { Text("Agentes de Venta", fontFamily = Montserrat, color = Color.White) },
+                        placeholder = { Text("Ingrese correo", fontFamily = Montserrat, color = Color.Gray) },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                val email = rawSellAgent.value.trim()
+                                if (email.isNotEmpty()) {
+                                    if (isValidEmail(email)) {
+                                        sellAgentsList.add(email)
+                                        invalidSellAgents.remove(email)
+                                    } else {
+                                        invalidSellAgents.add(email)
+                                    }
+                                    rawSellAgent.value = "" // Clear the input field
+                                }
+                            }
+                        ),
+                        singleLine = true,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedLabelColor = Color(0xFFD6773D),
+                            unfocusedLabelColor = Color(0xFFD6773D),
+                            cursorColor = Color(0xFFD6773D),
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        textStyle = TextStyle(
+                            color = Color.White,
+                            fontFamily = Montserrat
+                        ),
+                        modifier = Modifier.weight(1f) // Ensures the text field takes up available space
+                    )
+                    Spacer(modifier = Modifier.width(8.dp)) // Space between text field and button
+                    Button(
+                        onClick = {
                             val email = rawSellAgent.value.trim()
                             if (email.isNotEmpty()) {
                                 if (isValidEmail(email)) {
@@ -522,22 +588,24 @@ fun ProjectInputDialog(
                                 } else {
                                     invalidSellAgents.add(email)
                                 }
-                                rawSellAgent.value = "" // Limpiar campo
+                                rawSellAgent.value = "" // Clear the input field
                             }
-                        }
-                    ),
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedLabelColor = Color(0xFFD6773D),
-                        unfocusedLabelColor = Color(0xFFD6773D),
-                        cursorColor = Color(0xFFD6773D),
-                    ),
-                    shape = RoundedCornerShape(8.dp),
-                    textStyle = TextStyle(
-                        color = Color.White,
-                        fontFamily = Montserrat
-                    )
-                )
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFD6773D),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(4.dp),
+                        modifier = Modifier
+                            .width(60.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Add",
+                            tint = Color.White,
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyRow {
                     items(sellAgentsList) { email ->
