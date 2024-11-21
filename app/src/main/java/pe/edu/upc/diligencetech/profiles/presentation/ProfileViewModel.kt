@@ -13,6 +13,8 @@ import pe.edu.upc.diligencetech.common.Resource
 import pe.edu.upc.diligencetech.profiles.data.repositories.UserRepository
 import pe.edu.upc.diligencetech.profiles.domain.AgentResponse
 import pe.edu.upc.diligencetech.profiles.domain.User
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -48,7 +50,6 @@ class ProfileViewModel @Inject constructor(
                 val response = repository.getAgentName(agentId)
                 if (response is Resource.Success) {
                     _agentName.value = response.data
-                    Log.d("ProfileViewModel", "Agent name fetched successfully: ${_agentName.value}")
                 } else {
                     Log.e("ProfileViewModel", "Error fetching agent name: ${response.message}")
                 }

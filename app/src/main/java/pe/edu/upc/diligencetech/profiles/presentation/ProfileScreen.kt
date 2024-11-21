@@ -356,7 +356,7 @@ fun ProfileScreen(
 
                         Row {
                             Text(
-                                text = "Tiempo en Diligence Tech:",
+                                text = "Fecha de creación de la cuenta:",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = Montserrat,
@@ -365,7 +365,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             Text(
-                                text = "6 meses",
+                                text = agentName!!.createdAt.substringBefore(" "),
                                 color = Color.White,
                                 fontWeight = FontWeight.Normal,
                                 fontFamily = Montserrat,
